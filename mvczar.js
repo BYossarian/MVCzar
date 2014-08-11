@@ -1,5 +1,7 @@
 MVCzar = (function() {
 
+    "use strict";
+
     var exports = {};
 
     // ***************************************
@@ -73,6 +75,83 @@ MVCzar = (function() {
     };
 
     exports.Emitter = Emitter;
+
+    // ***************************************
+    // Model Interface
+    // ***************************************
+
+    function Model(setup) {
+
+        setup = setup || {};
+
+        // set any events 
+        Emitter.call(this, setup.events);
+
+        this._props = {};
+
+        // set initial values (silently - i.e. without triggering event handlers)
+        if (setup.initial) {
+            this.set(setup.initial, true);
+        }
+
+    }
+
+    // Model inherits from Emitter
+    Model.prototype = Object.create(Emitter.prototype);
+    Model.prototype.constructor = Model;
+
+    Model.prototype.set = function(a, b, c) {
+
+        // accepts an object and a boolean (silent) or
+        // a property name, a value and a boolean (silent)
+
+        if (a instanceof Object) {
+            // set multiple properties
+
+            var changed = false;
+
+            for (var prop in a) {
+                if (a.hasOwnProperty(prop)) {
+
+                    // only fire change event if value actually changes
+                    if (this._props[prop] !== a[prop]) {
+                        this._props[prop] = a[prop];
+                        if (!b) {
+                            // silent flag is false
+                            this.emit('change:' + prop);
+                        }
+                        changed = true;
+                    }
+
+                }
+            }
+
+            if (changed && !b) {
+                this.emit('change');
+            }
+
+        } else {
+            // set a single property
+
+            // only fire change event if value actually changes
+            if (this._props[a] !== b) {
+                this._props[a] = b;
+                if (!c) {
+                    this.emit('change:' + a);
+                    this.emit('change');
+                }
+            }
+        }
+
+    };
+
+    Model.prototype.get = function(property) {
+        
+        return this._props[property];
+
+    };
+
+    exports.Model = Model;
 
     return exports;
 
