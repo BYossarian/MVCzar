@@ -19,7 +19,7 @@
 
         describe("The Emitter Interface", function() {
             it("Allows you to attach event handlers and emit events", function() {
-                var emitter = new Emitter(),
+                var emitter = new MVCzar.Emitter(),
                     result = false,
                     that = null;
 
@@ -38,7 +38,7 @@
                 var result = false,
                     that = null;
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     someEvent: function() {
                         result = true;
                     }
@@ -55,7 +55,7 @@
                     resultC = false,
                     resultD = false;
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     eventA: function() {
                         resultA = true;
                     },
@@ -85,7 +85,7 @@
             it("Allows multiple handlers on the same event to be fired in order", function() {
                 var result = "";
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     someEvent: function() {
                         result += "A";
                     }
@@ -110,7 +110,7 @@
                     resultC = false,
                     resultD = false;
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     eventA: function() {
                         resultA = !resultA;
                     },
@@ -173,7 +173,7 @@
                     resultB = false,
                     resultC = false;
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     someEvent: function() {
                         resultA = !resultA;
                     }
@@ -218,7 +218,7 @@
             it("Will maintain the event order when deattching handlers", function() {
                 var result = "";
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     someEvent: function() {
                         result += "A";
                     }
@@ -244,7 +244,7 @@
             it("Will deattch multiple equivalent handlers", function() {
                 var result = "";
 
-                var emitter = new Emitter();
+                var emitter = new MVCzar.Emitter();
 
                 var handler = function() {
                     result += "A";
@@ -274,7 +274,7 @@
                     resultB = false,
                     resultC = false;
 
-                var emitter = new Emitter({
+                var emitter = new MVCzar.Emitter({
                     eventA: function() {
                         resultA = !resultA;
                     }
