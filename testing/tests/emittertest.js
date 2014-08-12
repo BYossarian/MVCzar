@@ -278,4 +278,35 @@ describe("The Emitter Interface", function() {
         expect(resultC).toBe(true);
     });
 
+    it("Passes an event object to the handler", function() {
+
+        var eventObj = null;
+
+        var emitter = new MVCzar.Emitter({
+            someEvent: function(e) {
+                eventObj = e;
+            }
+        });
+
+        emitter.emit("someEvent");
+        expect(eventObj).toEqual({
+            target: emitter,
+            type: "someEvent"
+        });
+        // not sure on internal workings of .toEqual() but
+        // we want e.target to be an actual reference to the emitter so:
+        expect(eventObj.target).toBe(emitter);
+
+        // pass custom data to the event object
+        emitter.emit("someEvent", {hello: "there"});
+        expect(eventObj).toEqual({
+            data: {
+                hello: "there"
+            },
+            target: emitter,
+            type: "someEvent"
+        });
+
+    });
+
 });

@@ -61,13 +61,26 @@ MVCzar = (function() {
 
     };
 
-    Emitter.prototype.emit = function(event) {
+    Emitter.prototype.emit = function(event, eventData) {
 
         // call all handlers for stated event
         if (this._handlers[event]) {
-            for (var i=0, l=this._handlers[event].length; i<l; i++) {
-                this._handlers[event][i].call(this);
+
+            // the event object
+            var e = {
+                target: this,
+                type: event
+            };
+
+            if (typeof eventData !== "undefined") {
+                e.data = eventData;
             }
+
+            for (var i=0, l=this._handlers[event].length; i<l; i++) {
+                this._handlers[event][i].call(this, e);
+            }
+
+
         }
 
         return this;
