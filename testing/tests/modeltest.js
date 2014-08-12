@@ -75,6 +75,71 @@ describe("The Model Class", function() {
 
     });
 
+    it("Will return a copy of the object's properties when .get() is used without arguments", function() {
+
+        var obj = {
+                someProp: "hey",
+                someNum: 42,
+                subObj: {
+                    blah: "blah"
+                }
+            };
+
+        var model = new MVCzar.Model({
+            initial: obj
+        });
+
+        // should return copy
+        expect(model.get()).toEqual(obj);
+        expect(model.get()).not.toBe(obj);
+
+        // a deep copy
+        expect(model.get().subObj).toEqual(obj.subObj);
+        expect(model.get().subObj).not.toBe(obj.subObj);
+
+    });
+
+    it("Allows properties to be unset", function() {
+
+        var model = new MVCzar.Model({
+            initial: {
+                someProp: "hey",
+                someNum: 42
+            }
+        });
+
+        // at first you see me ....
+        expect(model.get("someProp")).toBe("hey");
+        expect(model.get("someNum")).toBe(42);
+
+        // and now you don't ....
+        model.unset("someProp");
+        expect(model.get("someProp")).toBeUndefined();
+        expect(model.get("someNum")).toBe(42);
+
+    });
+
+    it("Allows chaining of set and unset", function() {
+
+        var model = new MVCzar.Model({
+            initial: {
+                someProp: "hey",
+                someNum: 42
+            }
+        });
+
+        // chaining of set and unset
+        model.unset("someNum").set("qwe", 123).set("asd", {prop: "erty"}).unset("qwe");
+
+        expect(model.get()).toEqual({
+            someProp: "hey",
+            asd: {
+                prop: "erty"
+            }
+        });
+
+    });
+
     it("Emits change events when changing properties", function() {
 
         var changeAny = 0,
@@ -117,9 +182,25 @@ describe("The Model Class", function() {
         expect(changeAny).toBe(4);
         expect(changeParticular).toBe(1);
 
+        // unsetting a property that doesn't exist shouldn't trigger hander
+        model.unset("notAProp");
+        expect(changeAny).toBe(4);
+        expect(changeParticular).toBe(1);
+
+        // unsetting a property
+        model.unset("aProp");
+        expect(changeAny).toBe(5);
+        expect(changeParticular).toBe(1);
+
+        // unsetting a particular property
+        model.unset("someProp");
+        expect(changeAny).toBe(6);
+        expect(changeParticular).toBe(2);
+
+
     });
 
-    it("allows you to set properties silently", function() {
+    it("allows you to set/unset properties silently", function() {
 
         var changeAny = 0,
             changeParticular = 0;
@@ -156,6 +237,34 @@ describe("The Model Class", function() {
         }, true);
         expect(changeAny).toBe(2);
         expect(changeParticular).toBe(1);
+
+        // silently unset a value
+        model.unset("someProp", true);
+        expect(changeAny).toBe(2);
+        expect(changeParticular).toBe(1);
+
+    });
+    
+    it("has a .toJSON() method that allows JSON.stringify to be used directly", function() {
+
+        var obj = {
+                someProp: "hey",
+                someNum: 42,
+                subObj: {
+                    blah: "blah"
+                }
+            };
+
+        var model = new MVCzar.Model({
+            initial: obj
+        });
+
+        // calling .toJSON() directly will actually return a copy
+        expect(model.toJSON()).toEqual(obj);
+        expect(model.toJSON()).not.toBe(obj);
+
+        // which will give the correct output when JSON.stringify is used
+        expect(JSON.stringify(model)).toBe(JSON.stringify(obj));
 
     });
 

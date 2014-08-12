@@ -143,11 +143,42 @@ MVCzar = (function() {
             }
         }
 
+        return this;
+
     };
 
     Model.prototype.get = function(property) {
         
-        return this._props[property];
+        if (typeof property === "string") {
+            return this._props[property];
+        } else {
+            // return a copy of the _props object
+            return JSON.parse(JSON.stringify(this._props));
+        }
+
+    };
+
+    Model.prototype.unset = function(property, silent) {
+
+        if (typeof this._props[property] !== "undefined") {
+            
+            delete this._props[property];
+            
+            if (!silent) {
+                this.emit("change:" + property);
+                this.emit('change');
+            }
+
+        }
+
+        return this;
+
+    };
+
+    Model.prototype.toJSON = function() {
+
+        // return a copy of the _props object to be used in JSON.stringify
+        return this.get();
 
     };
 
