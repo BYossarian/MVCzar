@@ -200,6 +200,41 @@ describe("The Model Class", function() {
 
     });
 
+    it("won't emit change events for initialisation values", function() {
+
+        var changeAny = 0,
+            changeParticular = 0;
+
+        var model = new MVCzar.Model({
+            events: {
+                change: function() {
+                    changeAny++;
+                },
+                "change:someProp": function() {
+                    changeParticular++;
+                }
+            },
+            initial: {
+                someProp: "abc",
+                another: true
+            }
+        });
+
+        // no events should have fired
+        expect(changeAny).toBe(0);
+        expect(changeParticular).toBe(0);
+
+        // although the event handlers are there ...
+        model.set("someProp", "someValue");
+        expect(changeAny).toBe(1);
+        expect(changeParticular).toBe(1);
+
+        model.set("aProp", "different");
+        expect(changeAny).toBe(2);
+        expect(changeParticular).toBe(1);
+
+    });
+
     it("allows you to set/unset properties silently", function() {
 
         var changeAny = 0,
