@@ -1,6 +1,6 @@
 describe("The Model Class", function() {
     
-    it("Inherits from Emitter", function() {
+    it("inherits from Emitter", function() {
 
         var model = new MVCzar.Model();
 
@@ -8,7 +8,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Allows events to be set on initialisation", function() {
+    it("allows events to be set on initialisation", function() {
 
         var result = false,
             that = null;
@@ -29,7 +29,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Has a getter and setter", function() {
+    it("has a getter and setter", function() {
 
         var model = new MVCzar.Model();
 
@@ -60,7 +60,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Allows properties to be set on initialisation", function() {
+    it("allows properties to be set on initialisation", function() {
 
         var model = new MVCzar.Model({
             initial: {
@@ -75,7 +75,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Will return a copy of the object's properties when .get() is used without arguments", function() {
+    it("will return a copy of the object's properties when .get() is used without arguments", function() {
 
         var obj = {
                 someProp: "hey",
@@ -99,7 +99,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Allows properties to be unset", function() {
+    it("allows properties to be unset", function() {
 
         var model = new MVCzar.Model({
             initial: {
@@ -119,7 +119,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Allows chaining of set and unset", function() {
+    it("allows chaining of set and unset", function() {
 
         var model = new MVCzar.Model({
             initial: {
@@ -140,7 +140,7 @@ describe("The Model Class", function() {
 
     });
 
-    it("Emits change events when changing properties", function() {
+    it("emits change events when changing properties", function() {
 
         var changeAny = 0,
             changeParticular = 0;

@@ -1,5 +1,6 @@
 describe("The Emitter Interface", function() {
-    it("Allows you to attach event handlers and emit events", function() {
+    
+    it("allows you to attach event handlers and emit events", function() {
         var emitter = new MVCzar.Emitter(),
             result = false,
             that = null;
@@ -15,7 +16,7 @@ describe("The Emitter Interface", function() {
         expect(that).toBe(emitter);
     });
 
-    it("Allows you to attach events on initilisation", function() {
+    it("allows you to attach events on initilisation", function() {
         var result = false,
             that = null;
 
@@ -30,7 +31,7 @@ describe("The Emitter Interface", function() {
         expect(result).toBe(true);
     });
 
-    it("Allows you to attach multiple different events", function() {
+    it("allows you to attach multiple different events", function() {
         var resultA = false,
             resultB = false,
             resultC = false,
@@ -63,7 +64,7 @@ describe("The Emitter Interface", function() {
         expect(resultD).toBe(false);
     });
 
-    it("Allows multiple handlers on the same event to be fired in order", function() {
+    it("allows multiple handlers on the same event to be fired in order", function() {
         var result = "";
 
         var emitter = new MVCzar.Emitter({
@@ -85,7 +86,7 @@ describe("The Emitter Interface", function() {
         expect(result).toBe("ABC");
     });
     
-    it("Allows you to deattch event handlers", function() {
+    it("allows you to deattch event handlers", function() {
         var resultA = false,
             resultB = false,
             resultC = false,
@@ -149,7 +150,7 @@ describe("The Emitter Interface", function() {
         expect(resultD).toBe(false);
     });
 
-    it("Allows you to detach particular handlers or all handlers from an event", function() {
+    it("allows you to detach particular handlers or all handlers from an event", function() {
         var resultA = false,
             resultB = false,
             resultC = false;
@@ -196,7 +197,7 @@ describe("The Emitter Interface", function() {
         expect(resultC).toBe(false);
     });
 
-    it("Will maintain the event order when deattching handlers", function() {
+    it("will maintain the event order when deattching handlers", function() {
         var result = "";
 
         var emitter = new MVCzar.Emitter({
@@ -222,7 +223,7 @@ describe("The Emitter Interface", function() {
         expect(result).toBe("AC");
     });
 
-    it("Will deattch multiple equivalent handlers", function() {
+    it("will deattch multiple equivalent handlers", function() {
         var result = "";
 
         var emitter = new MVCzar.Emitter();
@@ -250,7 +251,7 @@ describe("The Emitter Interface", function() {
         expect(result).toBe("AABB");
     });
 
-    it("Allows you to use chaining", function() {
+    it("allows you to use chaining", function() {
         var resultA = false,
             resultB = false,
             resultC = false;
@@ -316,7 +317,7 @@ describe("The Emitter Interface", function() {
             that = null,
             eventObj = null;
 
-        emitter.addObserver("anEvent", observer, function(e) {
+        emitter.addObserver(observer, "anEvent", function(e) {
             that = this;
             eventObj = e;
         });
@@ -346,13 +347,13 @@ describe("The Emitter Interface", function() {
                 result += "B";
             };
 
-        emitter.addObserver("anEvent", {}, function() {
+        emitter.addObserver({}, "anEvent", function() {
             result += "A";
         });
 
-        emitter.addObserver("anEvent", observer, handler);
+        emitter.addObserver(observer, "anEvent", handler);
 
-        emitter.addObserver("anEvent", observer, function() {
+        emitter.addObserver(observer, "anEvent", function() {
             result += "C";
         });
 
@@ -371,17 +372,17 @@ describe("The Emitter Interface", function() {
                 result += "B";
             };
 
-        emitter.addObserver("anEvent", observer, function() {
+        emitter.addObserver(observer, "anEvent", function() {
             result += "A";
         });
 
-        emitter.addObserver("anEvent", observer, handler);
+        emitter.addObserver(observer, "anEvent", handler);
 
-        emitter.addObserver("anEvent", observer, function() {
+        emitter.addObserver(observer, "anEvent", function() {
             result += "C";
         });
 
-        emitter.addObserver("anEvent", {}, function() {
+        emitter.addObserver({}, "anEvent", function() {
             result += "D";
         });
 
@@ -391,12 +392,12 @@ describe("The Emitter Interface", function() {
         expect(result).toBe("ABCD");
 
         // remove one observer with a particular handler
-        emitter.removeObserver("anEvent", observer, handler);
+        emitter.removeObserver(observer, "anEvent", handler);
         emitter.emit("anEvent");
         expect(result).toBe("ABCDACD");
 
         // remove all handlers for a particular observer
-        emitter.removeObserver("anEvent", observer);
+        emitter.removeObserver(observer, "anEvent");
         emitter.emit("anEvent");
         expect(result).toBe("ABCDACDD");
 

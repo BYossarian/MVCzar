@@ -62,7 +62,7 @@ MVCzar = (function() {
 
     };
 
-    Emitter.prototype.addObserver = function(event, observer, handler) {
+    Emitter.prototype.addObserver = function(observer, event, handler) {
 
         if (this._observers[event]) {
             this._observers[event].push({
@@ -80,7 +80,7 @@ MVCzar = (function() {
 
     };
 
-    Emitter.prototype.removeObserver = function(event, observer, handler) {
+    Emitter.prototype.removeObserver = function(observer, event, handler) {
 
         if (this._observers[event]) {
 
@@ -250,6 +250,174 @@ MVCzar = (function() {
     };
 
     exports.Model = Model;
+
+    // ***************************************
+    // View Interface
+    // ***************************************
+
+    // find the right name for the element.matches() function for checking if an
+    // element matches a given selector
+    var matchesSelectorName = (function(testElem) {
+
+        var funcNames = ["matches", "webkitMatchesSelector", "mozMatchesSelector", "msMatchesSelector", "oMatchesSelector"],
+            i = funcNames.length;
+
+        while (i--) {
+            if (testElem[funcNames[i]]) {
+                return funcNames[i];
+            }
+        }
+
+    })(HTMLElement.prototype);
+
+    function View(setup) {
+
+        setup = setup || {};
+
+        // set the view's element
+        if (setup.elem instanceof HTMLElement) {
+            this.elem = setup.elem;
+        } else if (setup.elem instanceof String) {
+            this.elem = document.querySelector(setup.elem) || document.createElement('div');
+        } else {
+            this.elem = document.createElement('div');
+        }
+
+        // set the view's render function
+        this._render = setup.render || function() {};
+
+        // set the view's model
+        if (setup.model) {
+            this.model = setup.model;
+        }
+
+        // set up the initial event handlers for the DOM
+        this._DOMEvents = {};
+
+        this._DOMEventHandler = (function(e) {
+
+            var handlerArray = this._DOMEvents[e.type];
+
+            if (handlerArray) {
+                for (var i = 0, l = handlerArray.length; i<l; i++) {
+                    if (e.target[matchesSelectorName](handlerArray[i].selector)) {
+                        handlerArray[i].handler.call(e.target, e);
+                    }
+                }
+            }
+
+        }).bind(this);
+
+        // expect setup.DOMEvents to be an array of arrays: [event, selector, handler]
+        if (setup.DOMEvents) {
+            for (var j = 0, len = setup.DOMEvents.length; j<len; j++) {
+                this.addDOMEvent(setup.DOMEvents[j][0], setup.DOMEvents[j][1], setup.DOMEvents[j][2]);
+            }
+        }
+
+    }
+
+    View.prototype.observe = function(observee, event, handler) {
+
+        if (observee.addObserver) {
+
+            observee.addObserver(this, event, handler);
+
+        }
+
+        return this;
+
+    };
+
+    View.prototype.unobserve = function(observee, event, handler) {
+
+        if (observee.removeObserver) {
+
+            observee.removeObserver(this, event, handler);
+
+        }
+
+        return this;
+
+    };
+
+    View.prototype.setRender = function(render) {
+
+        this._render = render;
+
+        return this;
+
+    };
+
+    View.prototype.render = function() {
+
+        this._render.apply(this.elem, arguments);
+
+        return this;
+
+    };
+
+    View.prototype.addDOMEvent = function(event, selector, handler) {
+
+        if (this._DOMEvents[event] && this._DOMEvents[event].length) {
+            this._DOMEvents[event].push({
+                selector: selector,
+                handler: handler
+            });
+        } else {
+            // either first handler for this event or first one to be added back
+            // after previously emptying array
+            this._DOMEvents[event] = (this._DOMEvents[event] || []).push({
+                selector: selector,
+                handler: handler
+            });
+
+            // need to (re)attach DOM event handler
+            this.elem.addEventListener(event, this._DOMEventHandler, false);
+        }
+
+    };
+
+    View.prototype.removeDOMEvent = function(event, selector, handler) {
+
+        if (this._DOMEvents[event]) {
+
+            if (!selector && !handler) {
+                // remove all events
+
+                while (this._DOMEvents[event].length) {
+                    this._DOMEvents[event].pop();
+                }
+
+            } else {
+
+                var i = this._DOMEvents[event].length;
+                            
+                while (i--) {
+                                
+                    // check selector
+                    if (this._DOMEvents[event][i].selector === selector) {
+
+                        // if no specific handler is listed, or if the handlers match, remove it
+                        if (typeof handler === "undefined" || this._DOMEvents[event][i].handler === handler) {
+                            this._DOMEvents[event].splice(i,1);
+                        }
+
+                    }
+
+                }
+
+            }
+
+            // deattach DOM event handler if no more handlers are registered for this event
+            if (!this._DOMEvents[event].length) {
+                this.elem.removeEventListener(event, this._DOMEventHandler, false);
+            }
+
+        }
+    };
+
+    exports.View = View;
 
     // ***************************************
     // Router Interface
