@@ -277,7 +277,7 @@ MVCzar = (function() {
         // set the view's element
         if (setup.elem instanceof HTMLElement) {
             this.elem = setup.elem;
-        } else if (setup.elem instanceof String) {
+        } else if (typeof setup.elem === "string") {
             this.elem = document.querySelector(setup.elem) || document.createElement('div');
         } else {
             this.elem = document.createElement('div');
@@ -367,7 +367,8 @@ MVCzar = (function() {
         } else {
             // either first handler for this event or first one to be added back
             // after previously emptying array
-            this._DOMEvents[event] = (this._DOMEvents[event] || []).push({
+            this._DOMEvents[event] = (this._DOMEvents[event] || []);
+            this._DOMEvents[event].push({
                 selector: selector,
                 handler: handler
             });
@@ -375,6 +376,8 @@ MVCzar = (function() {
             // need to (re)attach DOM event handler
             this.elem.addEventListener(event, this._DOMEventHandler, false);
         }
+
+        return this;
 
     };
 
@@ -415,6 +418,9 @@ MVCzar = (function() {
             }
 
         }
+
+        return this;
+
     };
 
     exports.View = View;
@@ -427,6 +433,7 @@ MVCzar = (function() {
     var Router = (function() {
 
         var useHistory = false,
+            started = false,
             Router = Object.create(Emitter.prototype);
 
         Emitter.call(Router);
@@ -482,6 +489,12 @@ MVCzar = (function() {
             currentPath = "/" + path;
 
         };
+
+        function hasStarted() {
+
+            return started;
+
+        }
 
         function start(options) {
             
@@ -574,11 +587,14 @@ MVCzar = (function() {
                 return "/" + getNormalisedPath();
             };
 
+            started = true;
+
             return Router;
 
         }
 
         Router.start = start;
+        Router.hasStarted = hasStarted;
 
         return Router;
 
