@@ -1,4 +1,4 @@
-MVCzar = (function() {
+var MVCzar = (function() {
 
     "use strict";
 
@@ -22,7 +22,7 @@ MVCzar = (function() {
             }
         }
 
-    };
+    }
 
     Emitter.prototype.on = function(event, handler) {
 
@@ -449,7 +449,7 @@ MVCzar = (function() {
             // return hash with starting "#/" and trailing slash removed
 
             return window.location.hash.replace(/^#/, '').replace(/^\//, '').replace(/\/$/, '');
-        };
+        }
 
         function getPath() {
             // return path with root and trailing slash removed
@@ -461,7 +461,7 @@ MVCzar = (function() {
             }
 
             return pathname.replace(/^\//, '');
-        };
+        }
 
         function refresh(e) {
 
@@ -488,7 +488,7 @@ MVCzar = (function() {
 
             currentPath = "/" + path;
 
-        };
+        }
 
         function hasStarted() {
 
