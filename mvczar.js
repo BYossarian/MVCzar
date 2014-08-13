@@ -11,6 +11,7 @@ MVCzar = (function() {
     function Emitter(events) {
 
         this._handlers = {};
+        this._observers = {};
 
         if (events) {
             // add initial events
@@ -61,25 +62,78 @@ MVCzar = (function() {
 
     };
 
+    Emitter.prototype.addObserver = function(event, observer, handler) {
+
+        if (this._observers[event]) {
+            this._observers[event].push({
+                observer: observer,
+                handler: handler
+            });
+        } else {
+            this._observers[event] = [{
+                observer: observer,
+                handler: handler
+            }];
+        }
+
+        return this;
+
+    };
+
+    Emitter.prototype.removeObserver = function(event, observer, handler) {
+
+        if (this._observers[event]) {
+
+            var i = this._observers[event].length;
+            
+            while (i--) {
+                
+                // check observer
+                if (this._observers[event][i].observer === observer) {
+
+                    // if no specific handler is listed, or if the handlers match, remove it
+                    if (typeof handler === "undefined" || this._observers[event][i].handler === handler) {
+                        this._observers[event].splice(i,1);
+                    }
+
+                }
+
+            }
+
+        }
+
+        return this;
+
+    };
+
     Emitter.prototype.emit = function(event, eventData) {
+
+        // the event object
+        var e = {
+            target: this,
+            type: event
+        };
+
+        if (typeof eventData !== "undefined") {
+            e.data = eventData;
+        }
 
         // call all handlers for stated event
         if (this._handlers[event]) {
 
-            // the event object
-            var e = {
-                target: this,
-                type: event
-            };
-
-            if (typeof eventData !== "undefined") {
-                e.data = eventData;
-            }
-
-            for (var i=0, l=this._handlers[event].length; i<l; i++) {
+            for (var i = 0, l = this._handlers[event].length; i<l; i++) {
                 this._handlers[event][i].call(this, e);
             }
 
+
+        }
+
+        // inform all observers of stated event
+        if (this._observers[event]) {
+
+            for (var j = 0, k = this._observers[event].length; j<k; j++) {
+                this._observers[event][j].handler.call(this._observers[event][j].observer, e);
+            }
 
         }
 

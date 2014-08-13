@@ -278,7 +278,7 @@ describe("The Emitter Interface", function() {
         expect(resultC).toBe(true);
     });
 
-    it("Passes an event object to the handler", function() {
+    it("passes an event object to the handler", function() {
 
         var eventObj = null;
 
@@ -306,6 +306,100 @@ describe("The Emitter Interface", function() {
             target: emitter,
             type: "someEvent"
         });
+
+    });
+
+    it("allows objects to observe it's events using .addObserver()", function() {
+
+        var emitter = new MVCzar.Emitter(),
+            observer = {},
+            that = null,
+            eventObj = null;
+
+        emitter.addObserver("anEvent", observer, function(e) {
+            that = this;
+            eventObj = e;
+        });
+
+        emitter.emit("anEvent");
+
+        // observer hears the event and the handler is called with 'this' referencing the observer
+        expect(that).toBe(observer);
+
+        // the event object get's passed to the handler
+        expect(eventObj).toEqual({
+            type: "anEvent",
+            target: emitter
+        });
+        // not sure on internal workings of .toEqual() but
+        // we want e.target to be an actual reference to the emitter so:
+        expect(eventObj.target).toBe(emitter);
+
+    });
+
+    it("will notify the observers in the order that they were registered", function() {
+
+        var emitter = new MVCzar.Emitter(),
+            observer = {},
+            result = "",
+            handler = function() {
+                result += "B";
+            };
+
+        emitter.addObserver("anEvent", {}, function() {
+            result += "A";
+        });
+
+        emitter.addObserver("anEvent", observer, handler);
+
+        emitter.addObserver("anEvent", observer, function() {
+            result += "C";
+        });
+
+        emitter.emit("anEvent");
+
+        expect(result).toBe("ABC");
+
+    });
+
+    it("allows observers to stop watching an event using .removeObserver()", function() {
+
+        var emitter = new MVCzar.Emitter(),
+            observer = {},
+            result = "",
+            handler = function() {
+                result += "B";
+            };
+
+        emitter.addObserver("anEvent", observer, function() {
+            result += "A";
+        });
+
+        emitter.addObserver("anEvent", observer, handler);
+
+        emitter.addObserver("anEvent", observer, function() {
+            result += "C";
+        });
+
+        emitter.addObserver("anEvent", {}, function() {
+            result += "D";
+        });
+
+        emitter.emit("anEvent");
+
+        // everything working ok ....
+        expect(result).toBe("ABCD");
+
+        // remove one observer with a particular handler
+        emitter.removeObserver("anEvent", observer, handler);
+        emitter.emit("anEvent");
+        expect(result).toBe("ABCDACD");
+
+        // remove all handlers for a particular observer
+        emitter.removeObserver("anEvent", observer);
+        emitter.emit("anEvent");
+        expect(result).toBe("ABCDACDD");
+
 
     });
 

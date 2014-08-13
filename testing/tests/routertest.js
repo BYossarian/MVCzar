@@ -39,6 +39,10 @@ describe("The Router", function() {
         expect(MVCzar.Router.getPath()).toBe('/test/path');
         expect(window.location.href).toBe(startingPath.replace(/\/$/, '') + '/test/path');
         
+        // NOTE: some broswers limit history stack length doing lots 
+        // of repeating testing will cause this limit to be reached
+        // and hence this test will unfairly fail - just start testing
+        // again in a new window/tab
         expect(window.history.length).toBe(historyStackLength + 1);
 
     });
@@ -131,6 +135,9 @@ describe("The Router", function() {
                 oldPath: "/new/path"
             }
         });
+
+        // reset path
+        MVCzar.Router.go("");
 
     });
 
