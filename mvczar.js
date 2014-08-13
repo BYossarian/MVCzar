@@ -197,6 +197,173 @@ MVCzar = (function() {
 
     exports.Model = Model;
 
+    // ***************************************
+    // Router Interface
+    // ***************************************
+
+    // there'll only be one Router instance so no need to set up a constructor
+    var Router = (function() {
+
+        var useHistory = false,
+            Router = Object.create(Emitter.prototype);
+
+        Emitter.call(Router);
+
+        var initialPath = 0,  // webkit bug: use initial path to bypass popstate firing on page load
+            currentPath = "",    // used to pass the old path to the route event
+            root = "";
+
+        // methods to be defined once .start() has been called
+        var getNormalisedPath, go, replace;
+
+        function getHash() {
+            // return hash with starting "#/" and trailing slash removed
+
+            return window.location.hash.replace(/^#/, '').replace(/^\//, '').replace(/\/$/, '');
+        };
+
+        function getPath() {
+            // return path with root and trailing slash removed
+
+            var pathname = window.location.pathname.replace(/\/$/, ''); // removing trailing slash
+
+            if (pathname.indexOf(root) === 0) {
+                return pathname.slice(root.length).replace(/^\//, '');  // remove root from pathname & starting /
+            }
+
+            return pathname.replace(/^\//, '');
+        };
+
+        function refresh(e) {
+
+            var path = getNormalisedPath(),
+                route = path.split('/');
+
+            // webkit bug: use initial path to bypass popstate firing on page load
+            // basically, it's used so that the 2nd call to refresh after page load
+            // will be ignored if the current path is still the same as the first
+            // call to refresh. Also, checks for the existance of a passed argument
+            // so second refresh is only ignored if it comes from a state change event
+            // as opposed to calling router.refresh()
+            if (path === initialPath && e) {
+                initialPath = 0;
+                return;
+            }
+            initialPath = 0;
+
+            Router.emit("route", {
+                oldPath: currentPath,
+                path: "/" + path,
+                route: route
+            });
+
+            currentPath = "/" + path;
+
+        };
+
+        function start(options) {
+            
+            options = options || {};
+
+            // root defaults to current path
+            root = options.root || window.location.pathname;
+            // normalise root so that it starts with a slash but doesn't end with one
+            // also a root of "/" will be converted to ""
+            root = root.replace(/^\/?/, '/').replace(/\/?$/, '');
+
+            var hash = getHash(),
+                path = getPath();
+
+            useHistory = !options.useHash;
+
+            // define methods based on useHistory flag
+
+            // gets path (relative to root) without starting or trailing /
+            getNormalisedPath = useHistory ? getPath : getHash;
+
+            // navigate to a particular URL
+            go = useHistory ? 
+                    function(newPath) {
+                        window.history.pushState(null, document.title, root + newPath);
+
+                        // pushState doesn't trigger a popstate event so have to trigger manually:
+                        refresh();
+                    } :
+                    function(newPath) {
+                        window.location.hash = "#" + newPath;
+                    };
+
+            // replace the current URL
+            replace = useHistory ? 
+                    function(newPath) {
+                        window.history.replaceState(null, document.title, root + newPath);
+
+                        // replaceState doesn't trigger a popstate event so have to trigger manually:
+                        refresh();
+                    } :
+                    function(newPath) {
+                        window.location.replace("#" + newPath);
+                    };
+
+            // normalise current (i.e. initial) url
+            if (hash && path) {
+                // both a hash and a path
+                // in this case, use path and ignore hash
+                if (useHistory) {
+
+                    window.history.replaceState(null, document.title, root + "/" + path);
+
+                } else {
+                    
+                    window.location.replace((root || "/") + "#/" + path); // may trigger page reload
+
+                }
+
+            } else if (hash && useHistory) {
+                // has a hash, not a path in a browser with history support
+
+                window.history.replaceState(null, document.title, root + "/" + hash);
+
+            } else if (path && !useHistory) {
+                // has a path, not a hash in a browser without history support
+
+                window.location.replace((root || "/") + "#/" + path); // may trigger page reload
+
+            }
+
+            // load current (i.e. initial) page content
+            refresh(true);   // need to send true value here to sidestep webkit bug
+
+            // webkit bug: use initial path to bypass popstate firing on page load
+            initialPath = getNormalisedPath();
+
+            // event handlers for url change
+            if (useHistory) {
+                window.addEventListener('popstate', refresh, false);
+            } else {
+                window.addEventListener('hashchange', refresh, false);
+            }
+
+            // make methods publicly available
+            Router.go = go;
+            Router.replace = replace;
+            Router.refresh = refresh;
+            Router.getPath = function() {
+                return "/" + getNormalisedPath();
+            };
+
+            return Router;
+
+        }
+
+        Router.start = start;
+
+        return Router;
+
+    })();
+
+    exports.Router = Router;
+
     return exports;
 
 })();
