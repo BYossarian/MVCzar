@@ -1,4 +1,4 @@
-// MVCzar v1.0 by Ben Jackson
+// MVCzar by Ben Jackson
 //
 // https://github.com/BYossarian/MVCzar
 
