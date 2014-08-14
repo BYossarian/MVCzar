@@ -1,3 +1,7 @@
+// MVCzar v1.0 by Ben Jackson
+//
+// https://github.com/BYossarian/MVCzar
+
 var MVCzar = (function() {
 
     "use strict";
@@ -351,7 +355,7 @@ var MVCzar = (function() {
 
     View.prototype.render = function() {
 
-        this._render.apply(this.elem, arguments);
+        this._render.apply(this, arguments);
 
         return this;
 
