@@ -1,4 +1,4 @@
-describe("The Emitter Interface", function() {
+describe("The Emitter Class", function() {
     
     it("allows you to attach event handlers and emit events", function() {
         var emitter = new MVCzar.Emitter(),
