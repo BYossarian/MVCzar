@@ -305,7 +305,7 @@ var MVCzar = (function() {
             if (handlerArray) {
                 for (var i = 0, l = handlerArray.length; i<l; i++) {
                     if (e.target[matchesSelectorName](handlerArray[i].selector)) {
-                        handlerArray[i].handler.call(e.target, e);
+                        handlerArray[i].handler.call(this, e);
                     }
                 }
             }
