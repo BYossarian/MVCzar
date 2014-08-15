@@ -87,7 +87,9 @@ var model = new MVCzar.Model(options);
 // if this causes an actual change in the value then
 // model will emit 'change' and 'change:propertyName'
 // events. If the silent flag is set to true, then
-// no events will be emitted
+// no events will be emitted.
+// the eventObject for 'change:propertyName' will
+// have eventObject.oldValue and eventObject.newValue
 model.set("propertyName", value[, silent]);
 
 // get the value of some property
