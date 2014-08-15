@@ -301,9 +301,7 @@ describe("The Emitter Class", function() {
         // pass custom data to the event object
         emitter.emit("someEvent", {hello: "there"});
         expect(eventObj).toEqual({
-            data: {
-                hello: "there"
-            },
+            hello: "there",
             target: emitter,
             type: "someEvent"
         });

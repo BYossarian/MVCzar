@@ -102,25 +102,21 @@ describe("The Router", function() {
         expect(eventObj).toEqual({
             type: "route",
             target: MVCzar.Router,
-            data: {
-                path: "/new/path",
-                route: ["new", "path"],
-                oldPath: path
-            }
+            path: "/new/path",
+            route: ["new", "path"],
+            oldPath: path
         });
         expect(that).toBe(MVCzar.Router);
-
+        
         // testing for the refresh function
         MVCzar.Router.refresh();
 
         expect(eventObj).toEqual({
             type: "route",
             target: MVCzar.Router,
-            data: {
-                path: "/new/path",
-                route: ["new", "path"],
-                oldPath: "/new/path"
-            }
+            path: "/new/path",
+            route: ["new", "path"],
+            oldPath: "/new/path"
         });
 
         // testing for the replace function
@@ -129,11 +125,9 @@ describe("The Router", function() {
         expect(eventObj).toEqual({
             type: "route",
             target: MVCzar.Router,
-            data: {
-                path: "/another/new/path",
-                route: ["another", "new", "path"],
-                oldPath: "/new/path"
-            }
+            path: "/another/new/path",
+            route: ["another", "new", "path"],
+            oldPath: "/new/path"
         });
 
         // reset path

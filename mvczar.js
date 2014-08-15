@@ -113,20 +113,15 @@ var MVCzar = (function() {
     Emitter.prototype.emit = function(event, eventData) {
 
         // the event object
-        var e = {
-            target: this,
-            type: event
-        };
-
-        if (typeof eventData !== "undefined") {
-            e.data = eventData;
-        }
+        eventData = eventData || {};
+        eventData.target = this;
+        eventData.type = event;
 
         // call all handlers for stated event
         if (this._handlers[event]) {
 
             for (var i = 0, l = this._handlers[event].length; i<l; i++) {
-                this._handlers[event][i].call(this, e);
+                this._handlers[event][i].call(this, eventData);
             }
 
 
@@ -136,7 +131,7 @@ var MVCzar = (function() {
         if (this._observers[event]) {
 
             for (var j = 0, k = this._observers[event].length; j<k; j++) {
-                this._observers[event][j].handler.call(this._observers[event][j].observer, e);
+                this._observers[event][j].handler.call(this._observers[event][j].observer, eventData);
             }
 
         }
@@ -169,7 +164,6 @@ var MVCzar = (function() {
 
     // Model inherits from Emitter
     Model.prototype = Object.create(Emitter.prototype);
-    Model.prototype.constructor = Model;
 
     Model.prototype.set = function(a, b, c) {
 

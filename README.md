@@ -27,7 +27,6 @@ emitter.on("eventName", function(eventObject) {
     
     // eventObject.type === "eventName"
     // eventObject.target === emitter
-    // eventObject.data === optionally event data
     
     // 'this' references the emitter
     
@@ -53,8 +52,9 @@ emitter.removeObserver(observerObject, "eventName", handler);
 emitter.removeObserver(observerObject, "eventName");
 
 // emit an event to trigger any listening handlers
-// optional eventData will be passed to the handler
-// via eventObject.data
+// an optional eventData object will be passed to the handler
+// as part of the eventOjbect. NB: if eventData has properties
+// called 'type' or 'target' then they will be overwritten
 emitter.emit(event [, eventData]);
 
 // all emitter methods return the emitter instance
@@ -188,11 +188,11 @@ It inherits from the Emitter class.
 // typical usage is to observe the router for "route" events
 someView.observe(MVCzar.Router, "route", function(eventObject) {
     
-    // eventObject.data.oldPath - the path before the routing
-    // eventObject.data.path - the new path after the routing
-    // eventObject.data.route - an array consisting of strings
-    //                          formed by splitting the new path
-    //                          along forward slash characters
+    // eventObject.oldPath - the path before the routing
+    // eventObject.path - the new path after the routing
+    // eventObject.route - an array consisting of strings
+    //                     formed by splitting the new path
+    //                     along forward slash characters
     
 });
 
