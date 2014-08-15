@@ -13,6 +13,8 @@ Usage
 
 ```javascript
 // initialisation options - all optional
+// basically just registering handlers for any events
+// that the Emitter may emit
 var events = {
     "someEventName" : function () {
         // the event handler
@@ -71,6 +73,10 @@ It inherits from the Emitter Class.
 
 ```javascript
 // initialisation options - all optional
+// - events is an object that will register handlers for
+//     any events the Model may emit
+// - initial is an object containing the initial data for
+//     the model
 var options = {
     events: {
         "eventName": handler
