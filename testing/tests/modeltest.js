@@ -143,15 +143,17 @@ describe("The Model Class", function() {
     it("emits change events when changing properties", function() {
 
         var changeAny = 0,
-            changeParticular = 0;
+            changeParticular = 0,
+            eventObj = null;
 
         var model = new MVCzar.Model({
             events: {
                 change: function() {
                     changeAny++;
                 },
-                "change:someProp": function() {
+                "change:someProp": function(e) {
                     changeParticular++;
+                    eventObj = e;
                 }
             }
         });
@@ -196,6 +198,16 @@ describe("The Model Class", function() {
         model.unset("someProp");
         expect(changeAny).toBe(6);
         expect(changeParticular).toBe(2);
+
+        // event object will hold the new and old values
+        model.set("someProp", "someValue");
+        model.set("someProp", "newValue");
+        expect(eventObj).toEqual({
+            type: "change:someProp",
+            target: model,
+            oldValue: "someValue",
+            newValue: "newValue"
+        });
 
 
     });

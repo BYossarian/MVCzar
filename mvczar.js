@@ -170,6 +170,8 @@ var MVCzar = (function() {
         // accepts an object and a boolean (silent) or
         // a property name, a value and a boolean (silent)
 
+        var eventData;
+
         if (a instanceof Object) {
             // set multiple properties
 
@@ -180,10 +182,18 @@ var MVCzar = (function() {
 
                     // only fire change event if value actually changes
                     if (this._props[prop] !== a[prop]) {
+
+                        // build event data
+                        eventData = {};
+                        if (typeof this._props[prop] !== "undefined") { eventData.oldValue = this._props[prop]; }
+                        if (typeof a[prop] !== "undefined") { eventData.newValue = a[prop]; }
+                        
+                        // change value
                         this._props[prop] = a[prop];
+                        
                         if (!b) {
                             // silent flag is false
-                            this.emit('change:' + prop);
+                            this.emit('change:' + prop, eventData);
                         }
                         changed = true;
                     }
@@ -200,9 +210,17 @@ var MVCzar = (function() {
 
             // only fire change event if value actually changes
             if (this._props[a] !== b) {
+                
+                // build event data
+                eventData = {};
+                if (typeof this._props[a] !== "undefined") { eventData.oldValue = this._props[a]; }
+                if (typeof b !== "undefined") { eventData.newValue = b; }
+
+                // change value
                 this._props[a] = b;
+                
                 if (!c) {
-                    this.emit('change:' + a);
+                    this.emit('change:' + a, eventData);
                     this.emit('change');
                 }
             }
@@ -226,11 +244,15 @@ var MVCzar = (function() {
     Model.prototype.unset = function(property, silent) {
 
         if (typeof this._props[property] !== "undefined") {
+
+            var oldValue = this._props[property];
             
             delete this._props[property];
             
             if (!silent) {
-                this.emit("change:" + property);
+                this.emit("change:" + property, {
+                    oldValue: oldValue
+                });
                 this.emit('change');
             }
 
