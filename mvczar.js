@@ -506,6 +506,14 @@ var MVCzar = (function() {
                 route: route
             });
 
+            if (currentPath !== "/" + path) {
+                Router.emit("pathchange", {
+                    oldPath: currentPath,
+                    path: "/" + path,
+                    route: route
+                });
+            }
+
             currentPath = "/" + path;
 
         }
@@ -520,8 +528,8 @@ var MVCzar = (function() {
             
             options = options || {};
 
-            // root defaults to current path
-            root = options.root || window.location.pathname;
+            // root defaults to /
+            root = options.root || "/";
             // normalise root so that it starts with a slash but doesn't end with one
             // also a root of "/" will be converted to ""
             root = root.replace(/^\/?/, '/').replace(/\/?$/, '');
@@ -615,6 +623,8 @@ var MVCzar = (function() {
 
         Router.start = start;
         Router.hasStarted = hasStarted;
+        // until the Router has been started, these methods do nothing:
+        Router.go = Router.replace = Router.refresh = Router.getPath = function() {};
 
         return Router;
 

@@ -10,17 +10,19 @@ describe("The Router", function() {
 
     it("has a start method to begin the router", function() {
 
-        expect(MVCzar.Router.go).toBeUndefined();
-        expect(MVCzar.Router.getPath).toBeUndefined();
-        expect(MVCzar.Router.refresh).toBeUndefined();
-        expect(MVCzar.Router.replace).toBeUndefined();
+        expect(MVCzar.Router.go()).toBeUndefined();
+        expect(MVCzar.Router.getPath()).toBeUndefined();
+        expect(MVCzar.Router.refresh()).toBeUndefined();
+        expect(MVCzar.Router.replace()).toBeUndefined();
 
-        MVCzar.Router.start();
+        MVCzar.Router.start({
+            root: window.location.pathname
+        });
 
-        expect(MVCzar.Router.go).toBeDefined();
-        expect(MVCzar.Router.getPath).toBeDefined();
-        expect(MVCzar.Router.refresh).toBeDefined();
-        expect(MVCzar.Router.replace).toBeDefined();
+        //expect(MVCzar.Router.go).toBeDefined();
+        expect(MVCzar.Router.getPath()).toBeDefined();
+        //expect(MVCzar.Router.refresh).toBeDefined();
+        //expect(MVCzar.Router.replace).toBeDefined();
 
     });
 
@@ -83,7 +85,7 @@ describe("The Router", function() {
 
     });
 
-    it("emits route events when called and passes an event object to the handler with routing information", function() {
+    it("emits 'route' events when called and passes an event object to the handler with routing information", function() {
 
         var eventObj = null,
             that = null,
@@ -130,7 +132,52 @@ describe("The Router", function() {
             oldPath: "/new/path"
         });
 
-        // reset path
+    });
+
+    it("emits 'pathchange' events when the URL actually changes", function() {
+
+        var routeEvents = 0,
+            pathchangeEvents = 0;
+
+        MVCzar.Router.go("/a/path");
+
+        MVCzar.Router.on("pathchange", function() {
+
+            pathchangeEvents++;
+
+        }).on("route", function() {
+
+            routeEvents++;
+
+        });
+
+        // change URL
+        MVCzar.Router.go('/new/path');
+        expect(routeEvents).toBe(1);
+        expect(pathchangeEvents).toBe(1);
+
+        // refresh
+        MVCzar.Router.refresh();
+        expect(routeEvents).toBe(2);
+        expect(pathchangeEvents).toBe(1);
+
+        // go, but to same URL
+        MVCzar.Router.go('/new/path');
+        expect(routeEvents).toBe(3);
+        expect(pathchangeEvents).toBe(1);
+
+        // replace
+        MVCzar.Router.replace('/different/path');
+        expect(routeEvents).toBe(4);
+        expect(pathchangeEvents).toBe(2);
+
+        // replace, but with same URL
+        MVCzar.Router.replace('/different/path');
+        expect(routeEvents).toBe(5);
+        expect(pathchangeEvents).toBe(2);
+
+
+        // reset path *****************
         MVCzar.Router.go("");
 
     });

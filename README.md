@@ -182,12 +182,15 @@ view.setRender(someFunction)
 
 ### The Router Interface  
 
-An interface for creating single page web apps. It allows you to change
-the URL and emits "route" events when URL changes occur.  
+An interface for creating single page apps. It allows you to change
+the URL and emits "route" whenever it's called (or hashchange/popstate
+is triggered), and "pathchange" events when the path actually changes 
+value.  
 It inherits from the Emitter class.
 
 ```javascript
-// typical usage is to observe the router for "route" events
+// typical usage is to observe the router for "route" or "pathchange" 
+// events:
 someView.observe(MVCzar.Router, "route", function(eventObject) {
     
     // eventObject.oldPath - the path before the routing
@@ -219,7 +222,8 @@ var router = MVCzar.Router.start(options);
 // determine if the router has been started
 router.hasStarted();
 
-// once started the following methods will be available on router:
+// the following Router methods do nothing until the Router
+// is started:
 
 // navigate to some path within your app - "route" will be triggered
 router.go("/some/path");
