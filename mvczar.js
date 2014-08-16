@@ -9,7 +9,7 @@ var MVCzar = (function() {
     var exports = {};
 
     // ***************************************
-    // Event Emitter Interface
+    // Emitter Class
     // ***************************************
 
     function Emitter(events) {
@@ -143,7 +143,7 @@ var MVCzar = (function() {
     exports.Emitter = Emitter;
 
     // ***************************************
-    // Model Interface
+    // Model Class
     // ***************************************
 
     function Model(options) {
@@ -276,7 +276,177 @@ var MVCzar = (function() {
     exports.Model = Model;
 
     // ***************************************
-    // View Interface
+    // ModelList Class
+    // ***************************************
+
+    function ModelList(options) {
+
+        options = options || {};
+
+        // set any events 
+        Emitter.call(this, options.events);
+
+        // set default data values for models
+        this._defaults = options.defaults;
+
+        // set setup function for models
+        this._setup = options.modelSetup || function() {};
+
+        if (options.setup) {
+            options.setup.call(this);
+        }
+
+        this._models = [];
+
+        // silently add the models to the collection
+        if (options.models) {
+            options.models.forEach(function(model) {
+                this.add(model, true);
+            });
+        }
+
+    }
+
+    // ModelList inherits from Emitter
+    ModelList.prototype = Object.create(Emitter.prototype);
+
+    // get length of ModelList
+    ModelList.prototype.length = function() {
+
+        return this._models.length;
+
+    };
+
+    // add a model to the ModelList
+    ModelList.prototype.add = function(initialData, silent) {
+
+        var newModel = null;
+
+        if (initialData instanceof Model) {
+
+            newModel = initialData;
+
+        } else {
+
+            // build initial data for the new model
+            var data = {};
+
+            for (var prop in this._defaults) {
+                if (this._defaults.hasOwnProperty(prop)) {
+                    data[prop] = this._defaults[prop];
+                }
+            }
+
+            for (prop in initialData) {
+                if (initialData.hasOwnProperty(prop)) {
+                    data[prop] = initialData[prop];
+                }
+            }
+
+            newModel = new Model({
+                initial: data,
+                setup: this._setup
+            });
+
+        }
+
+        this._models.push(newModel);
+
+        if (!silent) {
+
+            this.emit("add", {
+                model: newModel
+            });
+
+        }
+
+        return this;
+
+    };
+
+    // remove all instances of a model from a ModelList
+    ModelList.prototype.remove = function(model, silent) {
+
+        var i = this._models.length;
+
+        while(i--) {
+            if (this._models[i] === model) {
+                this._model.splice(i, 1);
+            }
+        }
+
+        if (!silent) {
+
+            this.emit("remove", {
+                model: model
+            });
+
+        }
+
+    };
+
+    ModelList.prototype.set = function(property, value, silent) {
+
+        this._models.forEach(function(model) {
+            model.set(property, value, silent);
+        });
+
+        return this;
+
+    };
+
+    ModelList.prototype.unset = function(property, silent) {
+
+        this._models.forEach(function(model) {
+            model.unset(property, silent);
+        });
+
+        return this;
+
+    };
+
+    ModelList.prototype.toJSON = function() {
+
+        var listCopy = [];
+
+        this._models.forEach(function(model) {
+            listCopy.push(model.toJSON());
+        });
+
+        return listCopy;
+
+    };
+
+    ModelList.prototype.forEach = function(func) {
+
+        var that = this;
+
+        this._models.forEach(function(model, i) {
+            func(model, i, that)
+        });
+
+        return this;
+
+    };
+
+    // return an Array (not a ModelList) of the models that
+    // pass the filter
+    ModelList.prototype.filter = function(func) {
+
+        var that = this;
+
+        return this._models.filter(function(model, i) {
+
+            func(model, i, that);
+
+        });
+
+    };
+
+    exports.ModelList = ModelList;
+
+    // ***************************************
+    // View Class
     // ***************************************
 
     // find the right name for the element.matches() function for checking if an
