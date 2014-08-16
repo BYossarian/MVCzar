@@ -77,12 +77,19 @@ It inherits from the Emitter Class.
 //     any events the Model may emit
 // - initial is an object containing the initial data for
 //     the model
+// - setup can be used to set up the new Model instance.
+//     within setup, 'this' will be the Model instance
 var options = {
     events: {
         "eventName": handler
     },
     initial: {
         "propertyName": value
+    },
+    setup: function() {
+
+        // 'this' here is the new Model instance
+
     }
 }
 
@@ -136,13 +143,20 @@ A useful wrapper for your HTML elements. Typical usage is that it observes some 
 // - render is the function used to draw the contents of elem
 // - DOMEvents attaches events to elem that will call the provided
 //     handler whenever the event target matches the given CSS selector
+// - setup can be used to set up the new View instance.
+//     within setup, 'this' will be the View instance
 var options = {
     elem: HTMLElement *or* "selector",
     render: function() {
         // 'this' will reference the view instance
     },
     model: someModelInstance,
-    DOMEvents: [["event", "selector", handler], [...], ...]
+    DOMEvents: [["event", "selector", handler], [...], ...],
+    setup: function () {
+
+        // 'this' here will be the new View instance
+
+    }
 }
 
 // create a new view

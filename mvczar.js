@@ -146,18 +146,22 @@ var MVCzar = (function() {
     // Model Interface
     // ***************************************
 
-    function Model(setup) {
+    function Model(options) {
 
-        setup = setup || {};
+        options = options || {};
 
         // set any events 
-        Emitter.call(this, setup.events);
+        Emitter.call(this, options.events);
 
         this._props = {};
 
         // set initial values (silently - i.e. without triggering event handlers)
-        if (setup.initial) {
-            this.set(setup.initial, true);
+        if (options.initial) {
+            this.set(options.initial, true);
+        }
+
+        if (options.setup) {
+            options.setup.call(this);
         }
 
     }
@@ -290,25 +294,25 @@ var MVCzar = (function() {
 
     })(HTMLElement.prototype);
 
-    function View(setup) {
+    function View(options) {
 
-        setup = setup || {};
+        options = options || {};
 
         // set the view's element
-        if (setup.elem instanceof HTMLElement) {
-            this.elem = setup.elem;
-        } else if (typeof setup.elem === "string") {
-            this.elem = document.querySelector(setup.elem) || document.createElement('div');
+        if (options.elem instanceof HTMLElement) {
+            this.elem = options.elem;
+        } else if (typeof options.elem === "string") {
+            this.elem = document.querySelector(options.elem) || document.createElement('div');
         } else {
             this.elem = document.createElement('div');
         }
 
         // set the view's render function
-        this._render = setup.render || function() {};
+        this._render = options.render || function() {};
 
         // set the view's model
-        if (setup.model) {
-            this.model = setup.model;
+        if (options.model) {
+            this.model = options.model;
         }
 
         // set up the initial event handlers for the DOM
@@ -328,11 +332,15 @@ var MVCzar = (function() {
 
         }).bind(this);
 
-        // expect setup.DOMEvents to be an array of arrays: [event, selector, handler]
-        if (setup.DOMEvents) {
-            for (var j = 0, len = setup.DOMEvents.length; j<len; j++) {
-                this.addDOMEvent(setup.DOMEvents[j][0], setup.DOMEvents[j][1], setup.DOMEvents[j][2]);
+        // expect options.DOMEvents to be an array of arrays: [event, selector, handler]
+        if (options.DOMEvents) {
+            for (var j = 0, len = options.DOMEvents.length; j<len; j++) {
+                this.addDOMEvent(options.DOMEvents[j][0], options.DOMEvents[j][1], options.DOMEvents[j][2]);
             }
+        }
+
+        if (options.setup) {
+            options.setup.call(this);
         }
 
     }
