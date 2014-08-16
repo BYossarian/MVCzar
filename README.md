@@ -134,6 +134,7 @@ model.set("property", value)
 ### View Class 
 
 A useful wrapper for your HTML elements. Typical usage is that it observes some model for changes and updates the presented content when needed.
+It inherits from the Emitter Class.
 
 ```javascript
 

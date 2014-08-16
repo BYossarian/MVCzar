@@ -1,5 +1,13 @@
 describe("The View Class", function() {
     
+    it("inherits from Emitter", function() {
+
+        var view = new MVCzar.View();
+
+        expect(view instanceof MVCzar.Emitter).toBe(true);
+
+    });
+
     it("has a linked DOM element that can be selected on initialisation", function() {
 
         var div = document.createElement('div'),

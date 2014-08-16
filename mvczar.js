@@ -298,6 +298,9 @@ var MVCzar = (function() {
 
         options = options || {};
 
+        // set any events on the view itself
+        Emitter.call(this, options.events);
+
         // set the view's element
         if (options.elem instanceof HTMLElement) {
             this.elem = options.elem;
@@ -344,6 +347,9 @@ var MVCzar = (function() {
         }
 
     }
+
+    // View inherits from Emitter
+    View.prototype = Object.create(Emitter.prototype);
 
     View.prototype.observe = function(observee, event, handler) {
 
