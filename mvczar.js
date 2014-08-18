@@ -358,6 +358,10 @@ var MVCzar = (function() {
                 model: newModel
             });
 
+            newModel.emit("add", {
+                modelList: this
+            });
+
         }
 
         return this;
@@ -371,7 +375,7 @@ var MVCzar = (function() {
 
         while(i--) {
             if (this._models[i] === model) {
-                this._model.splice(i, 1);
+                this._models.splice(i, 1);
             }
         }
 
@@ -379,6 +383,10 @@ var MVCzar = (function() {
 
             this.emit("remove", {
                 model: model
+            });
+
+            model.emit("remove", {
+                modelList: this
             });
 
         }
@@ -422,7 +430,7 @@ var MVCzar = (function() {
         var that = this;
 
         this._models.forEach(function(model, i) {
-            func(model, i, that)
+            func.call(that, model, i, that)
         });
 
         return this;
@@ -437,7 +445,7 @@ var MVCzar = (function() {
 
         return this._models.filter(function(model, i) {
 
-            func(model, i, that);
+            return func.call(that, model, i, that);
 
         });
 
