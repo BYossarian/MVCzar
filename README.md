@@ -103,7 +103,7 @@ var model = new MVCzar.Model(options);
 // no events will be emitted.
 // the eventObject for 'change:propertyName' will
 // have eventObject.oldValue and eventObject.newValue
-model.set("propertyName", value[, silent]);
+model.set("propertyName", value [, silent]);
 
 // can also set multiple properties at once
 var newData = {
@@ -111,7 +111,7 @@ var newData = {
     "anotherProperty": andAnotherValue
 };
 
-model.set(newData[, silent]);
+model.set(newData [, silent]);
 
 // get the value of some property
 model.get("propertyName");
@@ -123,7 +123,7 @@ model.get();
 // again, assuming the property previously had a value
 // 'change' and 'change:propertyName' will be emitted
 // unless silent is true
-model.unset("propertyName"[, silent]);
+model.unset("propertyName" [, silent]);
 
 // model has a .toJSON() method which returns a
 // copy of all the data
@@ -189,7 +189,7 @@ var modelList = new MVCzar.ModelList(options);
 // model, unless silent is set to true. The event object will
 // have model and modelList (respectively) properties
 // pointing to each other.
-modelList.add(model[, silent]);
+modelList.add(model [, silent]);
 
 // create a new model within the modelList
 // if any default data values were set when creating
@@ -202,7 +202,7 @@ var data = {
     "aProperty": someValue,
     "anotherProperty": andAnotherValue
 };
-modelList.add(data[, silent]);
+modelList.add(data [, silent]);
 
 
 // remove a model from the modelList
@@ -210,17 +210,18 @@ modelList.add(data[, silent]);
 // model, unless silent is set to true. The event object will
 // have model and modelList (respectively) properties
 // pointing to each other.
-modelList.remove(model[, silent]);
+modelList.remove(model [, silent]);
 
 // get the number of models in the ModelList
-modelList.length();
+// NB: modelList.length is read-only
+var numberOfModels = modelList.length;
 
 // set some property values on every model in the modelList
 // works likes model.set()
-modelList.set("propertyName", value[, silent]);
+modelList.set("propertyName", value [, silent]);
 
 // set many values:
-modelList.set(newData[, silent]);
+modelList.set(newData [, silent]);
 
 // unset a property from every model in the modelList
 // works like model.unset()
@@ -310,7 +311,7 @@ view.observe(emitter, "event", handler);
 // some handler. If handler is omitted then all
 // observation handlers for that event on that 
 // emitter will be removed.
-view.unobserve(emitter, "event"[, handler]);
+view.unobserve(emitter, "event" [, handler]);
 
 // listen to DOM events from within view.elem
 view.addDOMEvent("eventName", "selector", handler);
@@ -318,7 +319,7 @@ view.addDOMEvent("eventName", "selector", handler);
 // detach handlers for DOM events
 // either handler or both selector and handler can be
 // omitted
-view.removeDOMEvent("eventName"[, "selector"[, handler]]);
+view.removeDOMEvent("eventName" [, "selector" [, handler] ] );
 
 // all view methods can be chained. e.g.:
 view.setRender(someFunction)

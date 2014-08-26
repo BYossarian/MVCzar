@@ -325,11 +325,11 @@ var MVCzar = (function() {
     ModelList.prototype = Object.create(Emitter.prototype);
 
     // get length of ModelList
-    ModelList.prototype.length = function() {
-
-        return this._models.length;
-
-    };
+    Object.defineProperty(ModelList.prototype, "length", {
+        get: function() {
+            return this._models.length;
+        }
+    });
 
     // add a model to the ModelList
     ModelList.prototype.add = function(initialData, silent) {
