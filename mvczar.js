@@ -405,6 +405,8 @@ var MVCzar = (function() {
 
         }
 
+        return this;
+
     };
 
     ModelList.prototype.set = function(property, value, silent) {
@@ -513,6 +515,8 @@ var MVCzar = (function() {
         // set up the initial event handlers for the DOM
         this._DOMEvents = {};
 
+        // _DOMEventHandler needs to exist on the instance (rather than prototype)
+        // since it needs binding to the View instance
         this._DOMEventHandler = (function(e) {
 
             var handlerArray = this._DOMEvents[e.type];
@@ -612,7 +616,7 @@ var MVCzar = (function() {
         if (this._DOMEvents[event]) {
 
             if (!selector && !handler) {
-                // remove all events
+                // remove all handlers for that event
 
                 while (this._DOMEvents[event].length) {
                     this._DOMEvents[event].pop();
