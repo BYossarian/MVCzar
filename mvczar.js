@@ -295,6 +295,8 @@ var MVCzar = (function() {
 
     function ModelList(options) {
 
+        var that = this;
+
         options = options || {};
 
         // set any events 
@@ -315,7 +317,7 @@ var MVCzar = (function() {
         // silently add the models to the collection
         if (options.models) {
             options.models.forEach(function(model) {
-                this.add(model, true);
+                that.add(model, true);
             });
         }
 
@@ -324,7 +326,7 @@ var MVCzar = (function() {
     // ModelList inherits from Emitter
     ModelList.prototype = Object.create(Emitter.prototype);
 
-    // get length of ModelList
+    // define length property of ModelList
     Object.defineProperty(ModelList.prototype, "length", {
         get: function() {
             return this._models.length;
@@ -334,9 +336,10 @@ var MVCzar = (function() {
     // add a model to the ModelList
     ModelList.prototype.add = function(initialData, silent) {
 
-        var newModel = null;
+        var newModel = null,
+            addingOldModel = (initialData instanceof Model);
 
-        if (initialData instanceof Model) {
+        if (addingOldModel) {
 
             newModel = initialData;
 
@@ -351,10 +354,19 @@ var MVCzar = (function() {
                 }
             }
 
-            for (prop in initialData) {
-                if (initialData.hasOwnProperty(prop)) {
-                    data[prop] = initialData[prop];
+            // allow no initialData (meaning just add a default model)
+            // in which case the only possible argument would be the
+            // boolean silent
+            if (typeof initialData !== "boolean") {
+
+                for (prop in initialData) {
+                    if (initialData.hasOwnProperty(prop)) {
+                        data[prop] = initialData[prop];
+                    }
                 }
+
+            } else {
+                silent = initialData;
             }
 
             newModel = new Model({
@@ -372,9 +384,14 @@ var MVCzar = (function() {
                 model: newModel
             });
 
-            newModel.emit("add", {
-                modelList: this
-            });
+            // only emit add on model when adding a pre-exisiting model
+            if (addingOldModel) {
+
+                newModel.emit("add", {
+                    modelList: this
+                });
+
+            }
 
         }
 
@@ -406,6 +423,12 @@ var MVCzar = (function() {
         }
 
         return model;
+
+    };
+
+    ModelList.prototype.getModelAt = function(index) {
+
+        return this._models[index];
 
     };
 

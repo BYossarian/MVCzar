@@ -206,17 +206,29 @@ var data = {
 };
 var newModel = modelList.add(data [, silent]);
 
+// a fresh default model can be added by passing no arguments
+modelList.add();
+
+// ... or can be added silently by passing just true
+modelList.add(true);
+
 
 // remove a model from the modelList
 // will trigger 'remove' events on both the modelList and the
 // model, unless silent is set to true. The event object will
 // have model and modelList (respectively) properties
 // pointing to each other.
+// it will return a reference to the removed model
 modelList.remove(model [, silent]);
 
 // get the number of models in the ModelList
-// NB: modelList.length is read-only
+// NB: modelList.length is read-only (i.e. you can remove
+//      models by reducing modelList.length like you can with 
+//      arrays)
 var numberOfModels = modelList.length;
+
+// you can retrieve references to the models by index
+modelList.getModelAt(index);
 
 // set some property values on every model in the modelList
 // works likes model.set()
