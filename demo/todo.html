@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MVCzar ToDo</title>
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/todo.css">
+
+</head>
+<body>
+    
+    <main>
+
+        <h1>MVCzar ToDo</h1>
+        <p>An example app using <a href="https://github.com/BYossarian/MVCzar" target="_blank">MVCzar</a>, inspired by <a href="http://todomvc.com/" target="_blank">ToDoMVC.com</a>.</p>
+
+        <input id="addToDo" type="text" placeholder="What needs doing?">
+
+        <p id="status" class="hidden"></p>
+
+        <ul id="toDoList"></ul>
+
+        <footer>
+            <span><strong>0</strong> tasks left</span>
+            <span class="listFilter"><a href="/" class="selected">All</a> <a href="/completed">Completed</a> <a href="/unfinished">Unfinished</a></span>
+            <button>Clear Completed</button>
+        </footer>
+
+    </main>
+
+    <script src="js/mvczar.min.js"></script>
+    
+    <script src="js/todo.js"></script>
+
+</body>
+</html>
