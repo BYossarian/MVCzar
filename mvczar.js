@@ -49,16 +49,20 @@ var MVCzar = (function() {
                 var i = this._handlers[event].length;
 
                 while (i--) {
+                    
                     if (this._handlers[event][i] === handler) {
                         this._handlers[event].splice(i,1);
                     }
+
                 }
 
             } else {
                 // clear out all event handlers for stated event
+
                 while (this._handlers[event].length) {
                     this._handlers[event].pop();
                 }
+
             } 
         }
 
@@ -69,15 +73,19 @@ var MVCzar = (function() {
     Emitter.prototype.addObserver = function(observer, event, handler) {
 
         if (this._observers[event]) {
+            
             this._observers[event].push({
                 observer: observer,
                 handler: handler
             });
+
         } else {
+            
             this._observers[event] = [{
                 observer: observer,
                 handler: handler
             }];
+
         }
 
         return this;
@@ -112,7 +120,7 @@ var MVCzar = (function() {
 
     Emitter.prototype.emit = function(event, eventData) {
 
-        // the event object
+        // build the event object
         eventData = eventData || {};
         eventData.target = this;
         eventData.type = event;
@@ -127,7 +135,7 @@ var MVCzar = (function() {
 
         }
 
-        // inform all observers of stated event
+        // inform all observers of the stated event
         if (this._observers[event]) {
 
             for (var j = 0, k = this._observers[event].length; j<k; j++) {
@@ -153,7 +161,7 @@ var MVCzar = (function() {
         // set any events 
         Emitter.call(this, options.events);
 
-        this._props = {};
+        this._props = {};  // the actual raw data to be held by the model
 
         // set initial values (silently - i.e. without triggering event handlers)
         if (options.initial) {
@@ -169,65 +177,61 @@ var MVCzar = (function() {
     // Model inherits from Emitter
     Model.prototype = Object.create(Emitter.prototype);
 
-    Model.prototype.set = function(a, b, c) {
+    Model.prototype.set = function(property, value, silent) {
+
+        var changed = false,
+            eventData = null,
+            data = null;
+
+        function setOne(property, value, silent) {
+            
+            // only fire change event if value actually changes
+            if (this.get(property) !== value) {
+                
+                // build event data
+                eventData = {};
+                eventData.oldValue = this._props[property];
+                eventData.newValue = value;
+
+                // change value
+                this._props[property] = value;
+                
+                if (!silent) {
+                    this.emit('change:' + property, eventData);
+                }
+
+                changed = true;
+            }
+
+        }
 
         // accepts an object and a boolean (silent) or
         // a property name, a value and a boolean (silent)
-
-        var eventData;
-
-        if (a instanceof Object) {
+        // so rename variables accordingly
+        if (property instanceof Object) {
             // set multiple properties
+            
+            data = property;
+            silent = !!value;
 
-            var changed = false;
+            for (property in data) {
+                if (data.hasOwnProperty(property)) {
 
-            for (var prop in a) {
-                if (a.hasOwnProperty(prop)) {
+                    value = data[property];
 
-                    // only fire change event if value actually changes
-                    if (this._props[prop] !== a[prop]) {
-
-                        // build event data
-                        eventData = {};
-                        if (typeof this._props[prop] !== "undefined") { eventData.oldValue = this._props[prop]; }
-                        if (typeof a[prop] !== "undefined") { eventData.newValue = a[prop]; }
-                        
-                        // change value
-                        this._props[prop] = a[prop];
-                        
-                        if (!b) {
-                            // silent flag is false
-                            this.emit('change:' + prop, eventData);
-                        }
-                        changed = true;
-                    }
+                    setOne.call(this, property, value, silent);
 
                 }
-            }
-
-            if (changed && !b) {
-                this.emit('change');
             }
 
         } else {
             // set a single property
 
-            // only fire change event if value actually changes
-            if (this._props[a] !== b) {
-                
-                // build event data
-                eventData = {};
-                if (typeof this._props[a] !== "undefined") { eventData.oldValue = this._props[a]; }
-                if (typeof b !== "undefined") { eventData.newValue = b; }
+            setOne.call(this, property, value, silent);
+        }
 
-                // change value
-                this._props[a] = b;
-                
-                if (!c) {
-                    this.emit('change:' + a, eventData);
-                    this.emit('change');
-                }
-            }
+        if (changed && !silent) {
+            this.emit('change');
         }
 
         return this;
@@ -237,17 +241,27 @@ var MVCzar = (function() {
     Model.prototype.get = function(property) {
         
         if (typeof property === "string") {
-            return this._props[property];
+
+            // make sure the property actually exists on the _props instance
+            // and isn't inherited from Object
+            if (this._props.hasOwnProperty(property)) {
+                return this._props[property];
+            } else {
+                return;
+            }
+
         } else {
+
             // return a copy of the _props object
             return JSON.parse(JSON.stringify(this._props));
+
         }
 
     };
 
     Model.prototype.unset = function(property, silent) {
 
-        if (typeof this._props[property] !== "undefined") {
+        if (this._props.hasOwnProperty(property)) {
 
             var oldValue = this._props[property];
             
