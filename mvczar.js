@@ -1,4 +1,4 @@
-// MVCzar by Ben Jackson
+// MVCzar v0.8.0 by Ben Jackson
 //
 // https://github.com/BYossarian/MVCzar
 
@@ -469,7 +469,9 @@ var MVCzar = (function() {
         var that = this;
 
         this._models.forEach(function(model, i) {
-            func.call(that, model, i, that)
+
+            func.call(that, model, i, that);
+            
         });
 
         return this;
