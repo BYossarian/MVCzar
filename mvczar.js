@@ -378,7 +378,7 @@ var MVCzar = (function() {
 
         }
 
-        return this;
+        return newModel;
 
     };
 
@@ -405,7 +405,7 @@ var MVCzar = (function() {
 
         }
 
-        return this;
+        return model;
 
     };
 
@@ -516,7 +516,8 @@ var MVCzar = (function() {
         this._DOMEvents = {};
 
         // _DOMEventHandler needs to exist on the instance (rather than prototype)
-        // since it needs binding to the View instance
+        // since it needs binding to the particular View instance (and therefore
+        // varies from instance to instance)
         this._DOMEventHandler = (function(e) {
 
             var handlerArray = this._DOMEvents[e.type];

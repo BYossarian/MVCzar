@@ -189,6 +189,7 @@ var modelList = new MVCzar.ModelList(options);
 // model, unless silent is set to true. The event object will
 // have model and modelList (respectively) properties
 // pointing to each other.
+// it will return a reference to the added model
 modelList.add(model [, silent]);
 
 // create a new model within the modelList
@@ -198,11 +199,12 @@ modelList.add(model [, silent]);
 // them. modelSetup in the modelList initialisation 
 // options will be called on the new model.
 // 'add' events will fire as above
+// it will return a reference to the new model
 var data = {
     "aProperty": someValue,
     "anotherProperty": andAnotherValue
 };
-modelList.add(data [, silent]);
+var newModel = modelList.add(data [, silent]);
 
 
 // remove a model from the modelList
@@ -250,11 +252,9 @@ modelList.toJSON();
 // meaning you can use JSON.parse() meaningfully:
 JSON.parse(modelList);
 
-// .add(), .remove(), .set() and .unset() can be chained
+// .set() and .unset() can be chained
 modelList.set("property", value)
-            .add(model)
-            .unset("property")
-            .remove(someOtherModel);
+            .unset("property");
 
 ```
 
