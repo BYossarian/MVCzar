@@ -68,7 +68,7 @@ var appView = new MVCzar.View({
         // cache elements
         this.elemCache = {};
         this.elemCache.toDoList = document.getElementById('toDoList');
-        this.elemCache.tasksLeft = this.elem.querySelector('footer strong');
+        this.elemCache.tasksLeft = this.elem.querySelector('footer .tasksLeft');
         this.elemCache.filters = this.elem.querySelectorAll('.listFilter a');
         this.elemCache.status = document.getElementById('status');
 
@@ -113,7 +113,7 @@ var appView = new MVCzar.View({
             }).length;
 
         // update tasks left
-        this.elemCache.tasksLeft.innerHTML = tasksLeft;
+        this.elemCache.tasksLeft.innerHTML = "<strong>" + tasksLeft + "</strong> task" + (tasksLeft === 1 ? "" : "s") + " left";
 
         // highlight correct filter selection
         Array.prototype.forEach.call(this.elemCache.filters, function(elem) {
