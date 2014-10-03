@@ -4,7 +4,7 @@ describe("The ModelList Class", function() {
 
         var modelList = new MVCzar.ModelList();
 
-        expect(modelList instanceof MVCzar.Emitter).toBe(true);
+        expect(modelList instanceof MVCzar.Emitter).to.be.true;
 
     });
 
@@ -24,8 +24,8 @@ describe("The ModelList Class", function() {
 
         modelList.emit('someEvent');
 
-        expect(result).toBe(true);
-        expect(that).toBe(modelList);
+        expect(result).to.be.true;
+        expect(that).to.equal(modelList);
 
     });
 
@@ -43,8 +43,8 @@ describe("The ModelList Class", function() {
             }
         });
 
-        expect(result).toBe(true);
-        expect(that).toBe(modelList);
+        expect(result).to.be.true;
+        expect(that).to.equal(modelList);
 
     });
 
@@ -55,8 +55,8 @@ describe("The ModelList Class", function() {
         var model1 = modelList.add(),
             model2 = modelList.add();
 
-        expect(modelList.getModelAt(0)).toBe(model1);
-        expect(modelList.getModelAt(1)).toBe(model2);
+        expect(modelList.getModelAt(0)).to.equal(model1);
+        expect(modelList.getModelAt(1)).to.equal(model2);
 
     });
 
@@ -69,8 +69,8 @@ describe("The ModelList Class", function() {
             models: [model1, model2]
         });
 
-        expect(modelList.getModelAt(0)).toBe(model1);
-        expect(modelList.getModelAt(1)).toBe(model2);
+        expect(modelList.getModelAt(0)).to.equal(model1);
+        expect(modelList.getModelAt(1)).to.equal(model2);
 
     });
 
@@ -93,10 +93,10 @@ describe("The ModelList Class", function() {
         // add a default model
         var model1 = modelList.add();
 
-        expect(modelList.getModelAt(0)).toBe(model1);
-        expect(that).toBe(model1);
-        expect(model1.get('prop1')).toBe(100);
-        expect(model1.get('prop2')).toBe("value");
+        expect(modelList.getModelAt(0)).to.equal(model1);
+        expect(that).to.equal(model1);
+        expect(model1.get('prop1')).to.equal(100);
+        expect(model1.get('prop2')).to.equal("value");
 
         // add a model with some fresh data
         var model2 = modelList.add({
@@ -104,11 +104,11 @@ describe("The ModelList Class", function() {
             prop3: false
         });
 
-        expect(modelList.getModelAt(1)).toBe(model2);
-        expect(that).toBe(model2);
-        expect(model2.get('prop1')).toBe(100);
-        expect(model2.get('prop2')).toBe("different");
-        expect(model2.get('prop3')).toBe(false);
+        expect(modelList.getModelAt(1)).to.equal(model2);
+        expect(that).to.equal(model2);
+        expect(model2.get('prop1')).to.equal(100);
+        expect(model2.get('prop2')).to.equal("different");
+        expect(model2.get('prop3')).to.not.be.true;
 
     });
 
@@ -139,24 +139,24 @@ describe("The ModelList Class", function() {
         });
 
         var addedModel = modelList.add(model1);
-        expect(addedModel).toBe(model1);
-        expect(addedTo).toBe(modelList);
-        expect(adding).toBe(model1);
-        expect(count).toBe(1);
+        expect(addedModel).to.equal(model1);
+        expect(addedTo).to.equal(modelList);
+        expect(adding).to.equal(model1);
+        expect(count).to.equal(1);
 
         // can add silently
         modelList.add(model2, true);
-        expect(adding).toBe(model1);
-        expect(count).toBe(1);
+        expect(adding).to.equal(model1);
+        expect(count).to.equal(1);
 
         var model3 = modelList.add();
-        expect(adding).toBe(model3);
-        expect(count).toBe(2);
+        expect(adding).to.equal(model3);
+        expect(count).to.equal(2);
 
         // can add default models silently
         var model4 = modelList.add(true);
-        expect(adding).toBe(model3);
-        expect(count).toBe(2);
+        expect(adding).to.equal(model3);
+        expect(count).to.equal(2);
 
     });
 
@@ -170,20 +170,20 @@ describe("The ModelList Class", function() {
                 models: [model1, model2]
             });
 
-        expect(modelList.length).toBe(0);
-        expect(modelList2.length).toBe(2);
+        expect(modelList.length).to.equal(0);
+        expect(modelList2.length).to.equal(2);
 
         modelList.add();
 
-        expect(modelList.length).toBe(1);
+        expect(modelList.length).to.equal(1);
 
         modelList.add();
 
-        expect(modelList.length).toBe(2);
+        expect(modelList.length).to.equal(2);
 
         // read only
         modelList.length = 0;
-        expect(modelList.length).toBe(2);
+        expect(modelList.length).to.equal(2);
 
     });
 
@@ -213,29 +213,29 @@ describe("The ModelList Class", function() {
             });
 
         // check everything is in place
-        expect(modelList.getModelAt(0)).toBe(model1);
-        expect(modelList.getModelAt(1)).toBe(model2);
-        expect(modelList.length).toBe(2);
+        expect(modelList.getModelAt(0)).to.equal(model1);
+        expect(modelList.getModelAt(1)).to.equal(model2);
+        expect(modelList.length).to.equal(2);
 
         // remove first model
         var removedModel = modelList.remove(model1);
-        expect(removedModel).toBe(model1);
-        expect(modelList.getModelAt(0)).toBe(model2);
-        expect(modelList.getModelAt(1)).toBeUndefined();
-        expect(modelList.length).toBe(1);
-        expect(count).toBe(1);
-        expect(removing).toBe(model1);
-        expect(removedFrom).toBe(modelList);
+        expect(removedModel).to.equal(model1);
+        expect(modelList.getModelAt(0)).to.equal(model2);
+        expect(modelList.getModelAt(1)).to.be.undefined;
+        expect(modelList.length).to.equal(1);
+        expect(count).to.equal(1);
+        expect(removing).to.equal(model1);
+        expect(removedFrom).to.equal(modelList);
 
         // remove second model silently
         var removedModel = modelList.remove(model2, true);
-        expect(removedModel).toBe(model2);
-        expect(modelList.getModelAt(0)).toBeUndefined();
-        expect(modelList.getModelAt(1)).toBeUndefined();
-        expect(modelList.length).toBe(0);
-        expect(count).toBe(1);
-        expect(removing).toBe(model1);
-        expect(removedFrom).toBe(modelList);
+        expect(removedModel).to.equal(model2);
+        expect(modelList.getModelAt(0)).to.be.undefined;
+        expect(modelList.getModelAt(1)).to.be.undefined;
+        expect(modelList.length).to.equal(0);
+        expect(count).to.equal(1);
+        expect(removing).to.equal(model1);
+        expect(removedFrom).to.equal(modelList);
 
     });
 
@@ -257,12 +257,12 @@ describe("The ModelList Class", function() {
 
         modelList.set("prop2", "moreValue").unset("prop1").set("prop3", 1000);
 
-        expect(model1.get("prop1")).toBeUndefined();
-        expect(model1.get("prop2")).toBe("moreValue");
-        expect(model1.get("prop3")).toBe(1000);
-        expect(model2.get("prop1")).toBeUndefined();
-        expect(model2.get("prop2")).toBe("moreValue");
-        expect(model2.get("prop3")).toBe(1000);
+        expect(model1.get("prop1")).to.be.undefined;
+        expect(model1.get("prop2")).to.equal("moreValue");
+        expect(model1.get("prop3")).to.equal(1000);
+        expect(model2.get("prop1")).to.be.undefined;
+        expect(model2.get("prop2")).to.equal("moreValue");
+        expect(model2.get("prop3")).to.equal(1000);
 
     });
 
@@ -287,11 +287,11 @@ describe("The ModelList Class", function() {
 
         });
 
-        expect(count).toBe(2);
-        expect(modelReferences[0]).toBe(model1);
-        expect(modelReferences[1]).toBe(model2);
-        expect(modelListRef).toBe(modelList);
-        expect(that).toBe(modelList);
+        expect(count).to.equal(2);
+        expect(modelReferences[0]).to.equal(model1);
+        expect(modelReferences[1]).to.equal(model2);
+        expect(modelListRef).to.equal(modelList);
+        expect(that).to.equal(modelList);
 
     });
 
@@ -331,12 +331,12 @@ describe("The ModelList Class", function() {
 
         });
 
-        expect(count).toBe(4);
-        expect(modelListRef).toBe(modelList);
-        expect(that).toBe(modelList);
-        expect(filteredModels.length).toBe(2);
-        expect(filteredModels[0]).toBe(model1);
-        expect(filteredModels[1]).toBe(model4);
+        expect(count).to.equal(4);
+        expect(modelListRef).to.equal(modelList);
+        expect(that).to.equal(modelList);
+        expect(filteredModels.length).to.equal(2);
+        expect(filteredModels[0]).to.equal(model1);
+        expect(filteredModels[1]).to.equal(model4);
 
     });
 
@@ -354,8 +354,8 @@ describe("The ModelList Class", function() {
         modelList.add(expected[0]);
         modelList.add(expected[1]);
 
-        expect(modelList.toJSON()).toEqual(expected);
-        expect(JSON.parse(JSON.stringify(modelList))).toEqual(expected);
+        expect(modelList.toJSON()).to.deep.equal(expected);
+        expect(JSON.parse(JSON.stringify(modelList))).to.deep.equal(expected);
 
     });
 

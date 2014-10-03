@@ -12,8 +12,8 @@ describe("The Emitter Class", function() {
 
         emitter.emit('someEvent');
 
-        expect(result).toBe(true);
-        expect(that).toBe(emitter);
+        expect(result).to.be.true;
+        expect(that).to.equal(emitter);
     });
 
     it("allows you to attach events on initilisation", function() {
@@ -28,7 +28,7 @@ describe("The Emitter Class", function() {
 
         emitter.emit('someEvent');
 
-        expect(result).toBe(true);
+        expect(result).to.be.true;
     });
 
     it("allows you to attach multiple different events", function() {
@@ -58,10 +58,10 @@ describe("The Emitter Class", function() {
         emitter.emit('eventB');
         emitter.emit('eventC');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(true);
-        expect(resultD).toBe(false);
+        expect(resultA).to.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.be.true;
+        expect(resultD).to.not.be.true;
     });
 
     it("allows multiple handlers on the same event to be fired in order", function() {
@@ -83,7 +83,7 @@ describe("The Emitter Class", function() {
 
         emitter.emit('someEvent');
 
-        expect(result).toBe("ABC");
+        expect(result).to.equal("ABC");
     });
     
     it("allows you to deattch event handlers", function() {
@@ -117,10 +117,10 @@ describe("The Emitter Class", function() {
         emitter.emit('eventC');
         emitter.emit('eventD');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(true);
-        expect(resultD).toBe(true);
+        expect(resultA).to.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.be.true;
+        expect(resultD).to.be.true;
 
         // turn off some events
         emitter.off('eventA');
@@ -131,10 +131,10 @@ describe("The Emitter Class", function() {
         emitter.emit('eventC');
         emitter.emit('eventD');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(false);
-        expect(resultC).toBe(true);
-        expect(resultD).toBe(false);
+        expect(resultA).to.be.true;
+        expect(resultB).to.not.be.true;
+        expect(resultC).to.be.true;
+        expect(resultD).to.not.be.true;
 
         // turn of events using reference to function
         emitter.off('eventD', handler);
@@ -144,10 +144,10 @@ describe("The Emitter Class", function() {
         emitter.emit('eventC');
         emitter.emit('eventD');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(true);
-        expect(resultD).toBe(false);
+        expect(resultA).to.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.be.true;
+        expect(resultD).to.not.be.true;
     });
 
     it("allows you to detach particular handlers or all handlers from an event", function() {
@@ -174,27 +174,27 @@ describe("The Emitter Class", function() {
         // check all events are attached
         emitter.emit('someEvent');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(true);
+        expect(resultA).to.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.be.true;
 
         // deattach handler using reference
         emitter.off('someEvent', handler);
 
         emitter.emit('someEvent');
 
-        expect(resultA).toBe(false);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(false);
+        expect(resultA).to.not.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.not.be.true;
 
         // deattach all handlers
         emitter.off('someEvent');
 
         emitter.emit('someEvent');
 
-        expect(resultA).toBe(false);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(false);
+        expect(resultA).to.not.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.not.be.true;
     });
 
     it("will maintain the event order when deattching handlers", function() {
@@ -220,7 +220,7 @@ describe("The Emitter Class", function() {
 
         emitter.emit('someEvent');
 
-        expect(result).toBe("AC");
+        expect(result).to.equal("AC");
     });
 
     it("will deattch multiple equivalent handlers", function() {
@@ -241,14 +241,14 @@ describe("The Emitter Class", function() {
 
         emitter.emit('someEvent');
 
-        expect(result).toBe("AAB");
+        expect(result).to.equal("AAB");
 
         // remove all handler references from the emitter
         emitter.off('someEvent', handler);
 
         emitter.emit('someEvent');
 
-        expect(result).toBe("AABB");
+        expect(result).to.equal("AABB");
     });
 
     it("allows you to use chaining", function() {
@@ -268,15 +268,15 @@ describe("The Emitter Class", function() {
             resultC = !resultC;
         }).emit('eventA');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(false);
-        expect(resultC).toBe(false);
+        expect(resultA).to.be.true;
+        expect(resultB).to.not.be.true;
+        expect(resultC).to.not.be.true;
 
         emitter.off('eventA').emit('eventA').emit('eventB').emit('eventC');
 
-        expect(resultA).toBe(true);
-        expect(resultB).toBe(true);
-        expect(resultC).toBe(true);
+        expect(resultA).to.be.true;
+        expect(resultB).to.be.true;
+        expect(resultC).to.be.true;
     });
 
     it("passes an event object to the handler", function() {
@@ -290,17 +290,17 @@ describe("The Emitter Class", function() {
         });
 
         emitter.emit("someEvent");
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             target: emitter,
             type: "someEvent"
         });
-        // not sure on internal workings of .toEqual() but
+        // not sure on internal workings of .to.deep.equal() but
         // we want e.target to be an actual reference to the emitter so:
-        expect(eventObj.target).toBe(emitter);
+        expect(eventObj.target).to.equal(emitter);
 
         // pass custom data to the event object
         emitter.emit("someEvent", {hello: "there"});
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             hello: "there",
             target: emitter,
             type: "someEvent"
@@ -323,16 +323,16 @@ describe("The Emitter Class", function() {
         emitter.emit("anEvent");
 
         // observer hears the event and the handler is called with 'this' referencing the observer
-        expect(that).toBe(observer);
+        expect(that).to.equal(observer);
 
         // the event object get's passed to the handler
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             type: "anEvent",
             target: emitter
         });
-        // not sure on internal workings of .toEqual() but
+        // not sure on internal workings of .to.deep.equal() but
         // we want e.target to be an actual reference to the emitter so:
-        expect(eventObj.target).toBe(emitter);
+        expect(eventObj.target).to.equal(emitter);
 
     });
 
@@ -357,7 +357,7 @@ describe("The Emitter Class", function() {
 
         emitter.emit("anEvent");
 
-        expect(result).toBe("ABC");
+        expect(result).to.equal("ABC");
 
     });
 
@@ -387,17 +387,17 @@ describe("The Emitter Class", function() {
         emitter.emit("anEvent");
 
         // everything working ok ....
-        expect(result).toBe("ABCD");
+        expect(result).to.equal("ABCD");
 
         // remove one observer with a particular handler
         emitter.removeObserver(observer, "anEvent", handler);
         emitter.emit("anEvent");
-        expect(result).toBe("ABCDACD");
+        expect(result).to.equal("ABCDACD");
 
         // remove all handlers for a particular observer
         emitter.removeObserver(observer, "anEvent");
         emitter.emit("anEvent");
-        expect(result).toBe("ABCDACDD");
+        expect(result).to.equal("ABCDACDD");
 
 
     });

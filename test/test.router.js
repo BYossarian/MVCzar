@@ -4,31 +4,31 @@ describe("The Router", function() {
     
     it("inherits from Emitter", function() {
 
-        expect(MVCzar.Router instanceof MVCzar.Emitter).toBe(true);
+        expect(MVCzar.Router instanceof MVCzar.Emitter).to.be.true;
 
     });
 
     it("has a start method to begin the router", function() {
 
-        expect(MVCzar.Router.go()).toBeUndefined();
-        expect(MVCzar.Router.getPath()).toBeUndefined();
-        expect(MVCzar.Router.refresh()).toBeUndefined();
-        expect(MVCzar.Router.replace()).toBeUndefined();
+        expect(MVCzar.Router.go()).to.be.undefined;
+        expect(MVCzar.Router.getPath()).to.be.undefined;
+        expect(MVCzar.Router.refresh()).to.be.undefined;
+        expect(MVCzar.Router.replace()).to.be.undefined;
 
         MVCzar.Router.start({
             root: window.location.pathname
         });
 
-        //expect(MVCzar.Router.go).toBeDefined();
-        expect(MVCzar.Router.getPath()).toBeDefined();
-        //expect(MVCzar.Router.refresh).toBeDefined();
-        //expect(MVCzar.Router.replace).toBeDefined();
+        //expect(MVCzar.Router.go).to.not.be.undefined;
+        expect(MVCzar.Router.getPath()).to.not.be.undefined;
+        //expect(MVCzar.Router.refresh).to.not.be.undefined;
+        //expect(MVCzar.Router.replace).to.not.be.undefined;
 
     });
 
     it("has a .getPath() method that returns a path relative to the application's root", function() {
 
-        expect(MVCzar.Router.getPath()).toBe("/");
+        expect(MVCzar.Router.getPath()).to.equal("/");
 
     });
 
@@ -38,14 +38,14 @@ describe("The Router", function() {
 
         MVCzar.Router.go('/test/path');
 
-        expect(MVCzar.Router.getPath()).toBe('/test/path');
-        expect(window.location.href).toBe(startingPath.replace(/\/$/, '') + '/test/path');
+        expect(MVCzar.Router.getPath()).to.equal('/test/path');
+        expect(window.location.href).to.equal(startingPath.replace(/\/$/, '') + '/test/path');
         
         // NOTE: some broswers limit history stack length doing lots 
         // of repeating testing will cause this limit to be reached
         // and hence this test will unfairly fail - just start testing
         // again in a new window/tab
-        expect(window.history.length).toBe(historyStackLength + 1);
+        expect(window.history.length).to.equal(historyStackLength + 1);
 
     });
 
@@ -55,15 +55,15 @@ describe("The Router", function() {
 
         var historyStackLength = window.history.length;
 
-        expect(MVCzar.Router.getPath()).toBe('/test/path');
-        expect(window.location.href).toBe(startingPath.replace(/\/$/, '') + '/test/path');
+        expect(MVCzar.Router.getPath()).to.equal('/test/path');
+        expect(window.location.href).to.equal(startingPath.replace(/\/$/, '') + '/test/path');
 
         MVCzar.Router.refresh();
 
-        expect(MVCzar.Router.getPath()).toBe('/test/path');
-        expect(window.location.href).toBe(startingPath.replace(/\/$/, '') + '/test/path');
+        expect(MVCzar.Router.getPath()).to.equal('/test/path');
+        expect(window.location.href).to.equal(startingPath.replace(/\/$/, '') + '/test/path');
 
-        expect(window.history.length).toBe(historyStackLength);
+        expect(window.history.length).to.equal(historyStackLength);
 
     });
 
@@ -73,15 +73,15 @@ describe("The Router", function() {
 
         var historyStackLength = window.history.length;
 
-        expect(MVCzar.Router.getPath()).toBe('/test/path');
-        expect(window.location.href).toBe(startingPath.replace(/\/$/, '') + '/test/path');
+        expect(MVCzar.Router.getPath()).to.equal('/test/path');
+        expect(window.location.href).to.equal(startingPath.replace(/\/$/, '') + '/test/path');
 
         MVCzar.Router.replace('/different/path');
 
-        expect(MVCzar.Router.getPath()).toBe('/different/path');
-        expect(window.location.href).toBe(startingPath.replace(/\/$/, '') + '/different/path');
+        expect(MVCzar.Router.getPath()).to.equal('/different/path');
+        expect(window.location.href).to.equal(startingPath.replace(/\/$/, '') + '/different/path');
 
-        expect(window.history.length).toBe(historyStackLength);
+        expect(window.history.length).to.equal(historyStackLength);
 
     });
 
@@ -101,19 +101,19 @@ describe("The Router", function() {
         // testing for the go function
         MVCzar.Router.go('/new/path');
 
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             type: "route",
             target: MVCzar.Router,
             path: "/new/path",
             route: ["new", "path"],
             oldPath: path
         });
-        expect(that).toBe(MVCzar.Router);
+        expect(that).to.equal(MVCzar.Router);
         
         // testing for the refresh function
         MVCzar.Router.refresh();
 
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             type: "route",
             target: MVCzar.Router,
             path: "/new/path",
@@ -124,7 +124,7 @@ describe("The Router", function() {
         // testing for the replace function
         MVCzar.Router.replace('/another/new/path');
 
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             type: "route",
             target: MVCzar.Router,
             path: "/another/new/path",
@@ -153,32 +153,32 @@ describe("The Router", function() {
 
         // change URL
         MVCzar.Router.go('/new/path');
-        expect(routeEvents).toBe(1);
-        expect(pathchangeEvents).toBe(1);
+        expect(routeEvents).to.equal(1);
+        expect(pathchangeEvents).to.equal(1);
 
         // refresh
         MVCzar.Router.refresh();
-        expect(routeEvents).toBe(2);
-        expect(pathchangeEvents).toBe(1);
+        expect(routeEvents).to.equal(2);
+        expect(pathchangeEvents).to.equal(1);
 
         // go, but to same URL
         MVCzar.Router.go('/new/path');
-        expect(routeEvents).toBe(3);
-        expect(pathchangeEvents).toBe(1);
+        expect(routeEvents).to.equal(3);
+        expect(pathchangeEvents).to.equal(1);
 
         // replace
         MVCzar.Router.replace('/different/path');
-        expect(routeEvents).toBe(4);
-        expect(pathchangeEvents).toBe(2);
+        expect(routeEvents).to.equal(4);
+        expect(pathchangeEvents).to.equal(2);
 
         // replace, but with same URL
         MVCzar.Router.replace('/different/path');
-        expect(routeEvents).toBe(5);
-        expect(pathchangeEvents).toBe(2);
+        expect(routeEvents).to.equal(5);
+        expect(pathchangeEvents).to.equal(2);
 
 
         // reset path *****************
-        MVCzar.Router.go("");
+        MVCzar.Router.go("/");
 
     });
 

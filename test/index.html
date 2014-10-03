@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="vendor/mocha.css" />
+</head>
+<body>
+
+    <div id="mocha"></div>
+
+    <script src="vendor/mocha.js"></script>
+    <script src="vendor/chai.js"></script>
+
+    <script>
+
+        var expect = chai.expect;
+
+        mocha.setup({
+            ui: 'bdd',
+            bail: false
+        });
+        
+    </script>
+
+    <!-- MVCzar -->
+    <script src="../mvczar.js"></script>
+
+    <script src="test.emitter.js"></script>
+    <script src="test.model.js"></script>
+    <script src="test.modellist.js"></script>
+    <script src="test.view.js"></script>
+    <script src="test.router.js"></script>
+    
+    <script>
+        mocha.run();
+    </script>
+
+</body>
+</html>

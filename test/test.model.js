@@ -4,7 +4,7 @@ describe("The Model Class", function() {
 
         var model = new MVCzar.Model();
 
-        expect(model instanceof MVCzar.Emitter).toBe(true);
+        expect(model instanceof MVCzar.Emitter).to.be.true;
 
     });
 
@@ -24,8 +24,8 @@ describe("The Model Class", function() {
 
         model.emit('someEvent');
 
-        expect(result).toBe(true);
-        expect(that).toBe(model);
+        expect(result).to.be.true;
+        expect(that).to.equal(model);
 
     });
 
@@ -40,8 +40,8 @@ describe("The Model Class", function() {
         // setting a single property
         model.set("someProp", "someValue");
 
-        expect(model.get("someProp")).toBe("someValue");
-        expect(model.get("anotherProp")).toBeUndefined();
+        expect(model.get("someProp")).to.equal("someValue");
+        expect(model.get("anotherProp")).to.be.undefined;
 
         // setting many properties
         model.set({
@@ -49,14 +49,14 @@ describe("The Model Class", function() {
             moreProp: true
         });
 
-        expect(model.get("someProp")).toBe("someValue");
-        expect(model.get("anotherProp")).toBe("hey");
-        expect(model.get("moreProp")).toBe(true);
+        expect(model.get("someProp")).to.equal("someValue");
+        expect(model.get("anotherProp")).to.equal("hey");
+        expect(model.get("moreProp")).to.be.true;
 
         // setting an object
         model.set("object", obj);
 
-        expect(model.get("object")).toBe(obj);
+        expect(model.get("object")).to.equal(obj);
 
     });
 
@@ -69,9 +69,9 @@ describe("The Model Class", function() {
             }
         });
 
-        expect(model.get("someProp")).toBe("hey");
-        expect(model.get("someNum")).toBe(42);
-        expect(model.get("anotherProp")).toBeUndefined();
+        expect(model.get("someProp")).to.equal("hey");
+        expect(model.get("someNum")).to.equal(42);
+        expect(model.get("anotherProp")).to.be.undefined;
 
     });
 
@@ -90,12 +90,12 @@ describe("The Model Class", function() {
         });
 
         // should return copy
-        expect(model.get()).toEqual(obj);
-        expect(model.get()).not.toBe(obj);
+        expect(model.get()).to.deep.equal(obj);
+        expect(model.get()).not.to.equal(obj);
 
         // a deep copy
-        expect(model.get().subObj).toEqual(obj.subObj);
-        expect(model.get().subObj).not.toBe(obj.subObj);
+        expect(model.get().subObj).to.deep.equal(obj.subObj);
+        expect(model.get().subObj).not.to.equal(obj.subObj);
 
     });
 
@@ -109,13 +109,13 @@ describe("The Model Class", function() {
         });
 
         // at first you see me ....
-        expect(model.get("someProp")).toBe("hey");
-        expect(model.get("someNum")).toBe(42);
+        expect(model.get("someProp")).to.equal("hey");
+        expect(model.get("someNum")).to.equal(42);
 
         // and now you don't ....
         model.unset("someProp");
-        expect(model.get("someProp")).toBeUndefined();
-        expect(model.get("someNum")).toBe(42);
+        expect(model.get("someProp")).to.be.undefined;
+        expect(model.get("someNum")).to.equal(42);
 
     });
 
@@ -131,7 +131,7 @@ describe("The Model Class", function() {
         // chaining of set and unset
         model.unset("someNum").set("qwe", 123).set("asd", {prop: "erty"}).unset("qwe");
 
-        expect(model.get()).toEqual({
+        expect(model.get()).to.deep.equal({
             someProp: "hey",
             asd: {
                 prop: "erty"
@@ -159,19 +159,19 @@ describe("The Model Class", function() {
         });
 
         model.set("aProp", "value");
-        expect(changeAny).toBe(1);
+        expect(changeAny).to.equal(1);
 
         // setting the same value shouldn't trigger a change event
         model.set("aProp", "value");
-        expect(changeAny).toBe(1);
+        expect(changeAny).to.equal(1);
 
         model.set("someProp", "someValue");
-        expect(changeAny).toBe(2);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(2);
+        expect(changeParticular).to.equal(1);
 
         model.set("aProp", "different");
-        expect(changeAny).toBe(3);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(3);
+        expect(changeParticular).to.equal(1);
 
         // setting multiple properties at once
         // should only trigger change event once
@@ -181,28 +181,28 @@ describe("The Model Class", function() {
             someProp: "someValue",
             tooManyProps: 10
         });
-        expect(changeAny).toBe(4);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(4);
+        expect(changeParticular).to.equal(1);
 
         // unsetting a property that doesn't exist shouldn't trigger hander
         model.unset("notAProp");
-        expect(changeAny).toBe(4);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(4);
+        expect(changeParticular).to.equal(1);
 
         // unsetting a property
         model.unset("aProp");
-        expect(changeAny).toBe(5);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(5);
+        expect(changeParticular).to.equal(1);
 
         // unsetting a particular property
         model.unset("someProp");
-        expect(changeAny).toBe(6);
-        expect(changeParticular).toBe(2);
+        expect(changeAny).to.equal(6);
+        expect(changeParticular).to.equal(2);
 
         // event object will hold the new and old values
         model.set("someProp", "someValue");
         model.set("someProp", "newValue");
-        expect(eventObj).toEqual({
+        expect(eventObj).to.deep.equal({
             type: "change:someProp",
             target: model,
             oldValue: "someValue",
@@ -233,17 +233,17 @@ describe("The Model Class", function() {
         });
 
         // no events should have fired
-        expect(changeAny).toBe(0);
-        expect(changeParticular).toBe(0);
+        expect(changeAny).to.equal(0);
+        expect(changeParticular).to.equal(0);
 
         // although the event handlers are there ...
         model.set("someProp", "someValue");
-        expect(changeAny).toBe(1);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(1);
+        expect(changeParticular).to.equal(1);
 
         model.set("aProp", "different");
-        expect(changeAny).toBe(2);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(2);
+        expect(changeParticular).to.equal(1);
 
     });
 
@@ -265,30 +265,30 @@ describe("The Model Class", function() {
 
         // check handlers are attached
         model.set("aProp", "value");
-        expect(changeAny).toBe(1);
+        expect(changeAny).to.equal(1);
 
         model.set("someProp", "someValue");
-        expect(changeAny).toBe(2);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(2);
+        expect(changeParticular).to.equal(1);
 
         // silently change a single value
         model.set("aProp", "value2", true);
         model.set("someProp", "someValue2", true);
-        expect(changeAny).toBe(2);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(2);
+        expect(changeParticular).to.equal(1);
 
         // silently change multiple values
         model.set({
             someProp: "someValue",
             tooManyProps: 10
         }, true);
-        expect(changeAny).toBe(2);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(2);
+        expect(changeParticular).to.equal(1);
 
         // silently unset a value
         model.unset("someProp", true);
-        expect(changeAny).toBe(2);
-        expect(changeParticular).toBe(1);
+        expect(changeAny).to.equal(2);
+        expect(changeParticular).to.equal(1);
 
     });
     
@@ -307,11 +307,11 @@ describe("The Model Class", function() {
         });
 
         // calling .toJSON() directly will actually return a copy
-        expect(model.toJSON()).toEqual(obj);
-        expect(model.toJSON()).not.toBe(obj);
+        expect(model.toJSON()).to.deep.equal(obj);
+        expect(model.toJSON()).not.to.equal(obj);
 
         // which will give the correct output when JSON.stringify is used
-        expect(JSON.stringify(model)).toBe(JSON.stringify(obj));
+        expect(JSON.stringify(model)).to.equal(JSON.stringify(obj));
 
     });
 

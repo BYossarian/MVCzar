@@ -4,7 +4,7 @@ describe("The View Class", function() {
 
         var view = new MVCzar.View();
 
-        expect(view instanceof MVCzar.Emitter).toBe(true);
+        expect(view instanceof MVCzar.Emitter).to.be.true;
 
     });
 
@@ -21,21 +21,21 @@ describe("The View Class", function() {
         // initialise a view without an explicit element results in a new div
         var view1 = new MVCzar.View();
 
-        expect(view1.elem.tagName).toBe('DIV');
+        expect(view1.elem.tagName).to.equal('DIV');
 
         // initialise a view with a direct reference to a DOM element
         var view2 = new MVCzar.View({
             elem: div
         });
 
-        expect(view2.elem).toBe(div);
+        expect(view2.elem).to.equal(div);
 
         // initialise a view with a selector for a DOM element
         var view3 = new MVCzar.View({
             elem: '#testDiv p'
         });
 
-        expect(view3.elem).toBe(para);
+        expect(view3.elem).to.equal(para);
 
         // initialise a view with a selector for a DOM element that doesn't exist
         // results in a new div element being used instead
@@ -43,7 +43,7 @@ describe("The View Class", function() {
             elem: '#testDiv .notARealClass ul'
         });
 
-        expect(view4.elem.tagName).toBe('DIV');
+        expect(view4.elem.tagName).to.equal('DIV');
 
     });
 
@@ -58,7 +58,7 @@ describe("The View Class", function() {
         view.render();
 
         // doesn't do anything initialially
-        expect(para.innerHTML).toBe("");
+        expect(para.innerHTML).to.equal("");
 
         // use setRender to change function
         view.setRender(function() {
@@ -68,7 +68,7 @@ describe("The View Class", function() {
         view.render();
 
         // doesn't do anything initialially
-        expect(para.innerHTML).toBe("Testing this real good");
+        expect(para.innerHTML).to.equal("Testing this real good");
 
         // render can be set on initialisation
         var para2 = document.createElement('p'),
@@ -81,7 +81,7 @@ describe("The View Class", function() {
 
         view2.render();
 
-        expect(para2.innerHTML).toBe("Watch the magic happen");
+        expect(para2.innerHTML).to.equal("Watch the magic happen");
 
     });
 
@@ -92,7 +92,7 @@ describe("The View Class", function() {
                 model: model
             });
 
-        expect(view.model).toBe(model);
+        expect(view.model).to.equal(model);
 
     });
 
@@ -114,16 +114,16 @@ describe("The View Class", function() {
 
         model.set("someProp", 123);
 
-        expect(that).toBe(view);
-        expect(theOther).toBe(model);
-        expect(result).toBe(1);
+        expect(that).to.equal(view);
+        expect(theOther).to.equal(model);
+        expect(result).to.equal(1);
 
         // unobserve model
         view.unobserve(model, "change");
 
         model.set("someProp", 12345);
 
-        expect(result).toBe(1);
+        expect(result).to.equal(1);
 
     });
 
@@ -148,7 +148,7 @@ describe("The View Class", function() {
 
         para.click();
 
-        expect(that).toBe(view);
+        expect(that).to.equal(view);
 
     });
 
